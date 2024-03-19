@@ -1,0 +1,40 @@
+version: '3.6'
+
+services:
+    nodejs:
+        build:
+            context: .
+            target: nodejs
+        environment:
+            GENIEACS_MONGODB_CONNECTION_URL: "mongodb://db/genieacs"
+            GENIEACS_CWMP_WORKER_PROCESSES: 1
+            GENIEACS_FS_WORKER_PROCESSES: 1
+            GENIEACS_NBI_WORKER_PROCESSES: 1
+            GENIEACS_UI_WORKER_PROCESSES: 1
+        volumes:
+            - .:/srv/www:rw,cached
+        ports:
+            - "7547:7547"
+            - "7557:7557"
+            - "3000:3000"
+        networks:
+            - internal
+        depends_on:
+            - db
+    db:
+        image: mongo:latest
+        ports:
+            - "27017:27017"
+        volumes:
+            - ./.docker/.mongodb-data:/data/db
+        logging:
+            driver: "none"
+        networks:
+            - internal
+networks:
+    internal:
+        driver: bridge
+        ipam:
+            driver: default
+            config:
+                -   subnet: 192.168.121.0/28

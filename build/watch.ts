@@ -23,7 +23,7 @@ const fsAsync = {
 
 const execAsync = promisify(exec);
 
-const MODE = process.env['NODE_ENV'] || 'production';
+const MODE = process.env['NODE_ENV'] || 'development';
 
 const INPUT_DIR  = process.cwd();
 const OUTPUT_DIR = path.join(INPUT_DIR, 'dist');
@@ -226,6 +226,8 @@ async function generateIconsSprite(): Promise<void> {
 }
 
 async function copyStatic(): Promise<void> {
+    console.log('copyStatic');
+
     const files = [
         'LICENSE',
         'README.md',
@@ -257,18 +259,25 @@ async function copyStatic(): Promise<void> {
 }
 
 async function generateCss(): Promise<void> {
-    const res = await esbuild.build({
-                                        bundle        : true,
-                                        absWorkingDir : INPUT_DIR,
-                                        minify        : MODE === 'production',
-                                        sourcemap     : 'linked',
-                                        sourcesContent: false,
-                                        entryPoints   : ['ui/css/app.css'],
-                                        entryNames    : '[dir]/[name]-[hash]',
-                                        outfile       : path.join(OUTPUT_DIR, 'public/app.css'),
-                                        target        : ['chrome109', 'safari15.6', 'firefox115', 'opera102', 'edge118'],
-                                        metafile      : true,
-                                    });
+
+    console.log('generateCss');
+
+    const ctx = await esbuild.context({
+                                          bundle        : true,
+                                          absWorkingDir : INPUT_DIR,
+                                          minify        : MODE === 'production',
+                                          sourcemap     : 'linked',
+                                          sourcesContent: false,
+                                          entryPoints   : ['ui/css/app.css'],
+                                          entryNames    : '[dir]/[name]',
+                                          outfile       : path.join(OUTPUT_DIR, 'public/app.css'),
+                                          target        : ['chrome109', 'safari15.6', 'firefox115', 'opera102', 'edge118'],
+                                          metafile      : true,
+                                      });
+
+    await ctx.watch();
+    console.log('ESBuild generateCss Watching...');
+    const res = await ctx.rebuild();
 
     for (const [k, v] of Object.entries(res.metafile.outputs)) {
         if (v.entryPoint === 'ui/css/app.css') {
@@ -290,47 +299,46 @@ async function generateBackendJs(): Promise<void> {
         'genieacs-ui',
     ];
 
-    await esbuild.build({
-                            bundle        : true,
-                            absWorkingDir : INPUT_DIR,
-                            minify        : MODE === 'production',
-                            sourcemap     : 'inline',
-                            sourcesContent: false,
-                            platform      : 'node',
-                            target        : 'node12.13.0',
-                            packages      : 'external',
-                            banner        : {js: '#!/usr/bin/env node'},
-                            entryPoints   : services.map((s) => `bin/${s}.ts`),
-                            outdir        : path.join(OUTPUT_DIR, 'bin'),
-                            plugins       : [packageDotJsonPlugin, assetsPlugin],
-                        });
+    const ctx = await esbuild.context({
+                                          bundle        : true,
+                                          absWorkingDir : INPUT_DIR,
+                                          minify        : false,
+                                          sourcemap     : 'inline',
+                                          sourcesContent: false,
+                                          platform      : 'node',
+                                          target        : 'node16.20.0',
+                                          packages      : 'external',
+                                          banner        : {js: '#!/usr/bin/env node'},
+                                          entryPoints   : services.map((s) => `bin/${s}.ts`),
+                                          outdir        : path.join(OUTPUT_DIR, 'bin'),
+                                          plugins       : [packageDotJsonPlugin, assetsPlugin],
+                                      });
 
-    for (const bin of services) {
-        const p = path.join(OUTPUT_DIR, 'bin', bin);
-        await fsAsync.rename(`${p}.js`, p);
-        // Mark as executable
-        const mode = (await fsAsync.lstat(p)).mode;
-        await fsAsync.chmod(p, mode | 73);
-    }
+    console.log('ESBuild generateBackendJs Watching...');
+    await ctx.watch();
 }
 
 async function generateFrontendJs(): Promise<void> {
-    const res = await esbuild.build({
-                                        bundle        : true,
-                                        absWorkingDir : INPUT_DIR,
-                                        splitting     : true,
-                                        minify        : MODE === 'production',
-                                        sourcemap     : 'linked',
-                                        sourcesContent: false,
-                                        platform      : 'browser',
-                                        format        : 'esm',
-                                        target        : ['chrome109', 'safari15.6', 'firefox115', 'opera102', 'edge118'],
-                                        entryPoints   : ['ui/app.ts'],
-                                        entryNames    : '[dir]/[name]-[hash]',
-                                        outdir        : path.join(OUTPUT_DIR, 'public'),
-                                        plugins       : [packageDotJsonPlugin, inlineDepsPlugin, assetsPlugin],
-                                        metafile      : true,
-                                    });
+    const ctx = await esbuild.context({
+                                          bundle        : true,
+                                          absWorkingDir : INPUT_DIR,
+                                          splitting     : true,
+                                          minify        : MODE === 'production',
+                                          sourcemap     : 'linked',
+                                          sourcesContent: false,
+                                          platform      : 'browser',
+                                          format        : 'esm',
+                                          target        : ['chrome109', 'safari15.6', 'firefox115', 'opera102', 'edge118'],
+                                          entryPoints   : ['ui/app.ts'],
+                                          entryNames    : '[dir]/[name]',
+                                          outdir        : path.join(OUTPUT_DIR, 'public'),
+                                          plugins       : [packageDotJsonPlugin, inlineDepsPlugin, assetsPlugin],
+                                          metafile      : true,
+                                      });
+
+    await ctx.watch();
+    console.log('ESBuild generateFrontendJs Watching...');
+    const res = await ctx.rebuild();
 
     for (const [k, v] of Object.entries(res.metafile.outputs)) {
         for (const imp of v.imports)
@@ -346,12 +354,10 @@ async function generateFrontendJs(): Promise<void> {
 }
 
 init()
-    .then(() =>
-              Promise.all([
-                              Promise.all([generateIconsSprite(), copyStatic()]).then(generateFrontendJs),
-                              generateCss(),
-                          ]).then(generateBackendJs),
-    )
+    .then(() => Promise.all([
+                                Promise.all([generateIconsSprite(), copyStatic()]).then(generateFrontendJs),
+                                generateCss(),
+                            ]).then(generateBackendJs))
     .catch((err) => {
         process.stderr.write(err.stack + '\n');
     });

@@ -1,4 +1,21 @@
+###> cache, IDEs directories ###
+*Thumbs.db
+*.DS_Store
+*.empty
+/.fleet
+/.idea
+/.vscode
+###< cache, IDEs directories ###
+
+###> docker ###
+/docker-compose.override.yaml
+/docker-compose.override.yml
+/.docker/.mongodb-data/
+###< docker ###
+
+###> project directories and files ###
 *~
 node_modules
 dist
 docs/_build
+###< project directories and files ###

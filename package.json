@@ -1,70 +1,81 @@
 {
-  "name": "genieacs",
-  "version": "1.2.9",
-  "description": "A TR-069 Auto Configuration Server (ACS)",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/genieacs/genieacs.git"
-  },
-  "homepage": "https://genieacs.com",
-  "keywords": [
-    "TR-069",
-    "CWMP",
-    "ACS"
-  ],
-  "author": "Zaid Abdulla <zaid@genieacs.com>",
-  "license": "AGPL-3.0",
-  "private": true,
-  "directories": {
-    "bin": "bin"
-  },
-  "dependencies": {
-    "@breejs/later": "^4.1.0",
-    "bson": "^4.7.2",
-    "espresso-iisojs": "^1.0.8",
-    "iconv-lite": "^0.6.3",
-    "ipaddr.js": "^2.0.1",
-    "jsonwebtoken": "^8.5.1",
-    "koa": "^2.13.4",
-    "koa-bodyparser": "^4.3.0",
-    "koa-compress": "^5.1.0",
-    "koa-jwt": "^4.0.3",
-    "koa-router": "^12.0.0",
-    "koa-static": "^5.0.0",
-    "mongodb": "^4.16.0",
-    "parsimmon": "^1.18.1",
-    "seedrandom": "^3.0.5"
-  },
-  "devDependencies": {
-    "@types/codemirror": "^5.60.15",
-    "@types/jsonwebtoken": "^8.5.8",
-    "@types/koa": "^2.13.5",
-    "@types/koa-compress": "^4.0.3",
-    "@types/koa-router": "^7.4.4",
-    "@types/koa-static": "^4.0.2",
-    "@types/mithril": "^2.2.6",
-    "@types/node": "^20.10.4",
-    "@types/parsimmon": "^1.10.9",
-    "@types/seedrandom": "^3.0.8",
-    "@typescript-eslint/eslint-plugin": "^6.14.0",
-    "@typescript-eslint/parser": "^6.14.0",
-    "codemirror": "^5.65.16",
-    "esbuild": "^0.19.9",
-    "eslint": "^8.56.0",
-    "eslint-config-prettier": "^9.1.0",
-    "mithril": "^2.2.2",
-    "prettier": "^3.1.1",
-    "sql.js": "^1.7.0",
-    "svgo": "^2.8.0",
-    "typescript": "^5.3.3",
-    "yaml": "^1.10.2"
-  },
-  "engines": {
-    "node": ">=12.13.0"
-  },
-  "scripts": {
-    "test": "esbuild --log-level=warning --bundle --platform=node --target=node18 --packages=external --sourcemap=inline --outdir=test test/*.ts && node --test --enable-source-maps test/*.js && rm test/*.js",
-    "lint": "esbuild build/lint.ts --bundle --platform=node --target=node16 --packages=external | node",
-    "build": "esbuild build/build.ts --bundle --platform=node --target=node12 --packages=external | node"
-  }
+    "name": "genieacs",
+    "version": "1.2.9",
+    "description": "A TR-069 Auto Configuration Server (ACS)",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/genieacs/genieacs.git"
+    },
+    "homepage": "https://genieacs.com",
+    "keywords": [
+        "TR-069",
+        "CWMP",
+        "ACS"
+    ],
+    "author": "Zaid Abdulla <zaid@genieacs.com>",
+    "license": "AGPL-3.0",
+    "private": true,
+    "directories": {
+        "bin": "bin"
+    },
+    "dependencies": {
+        "@breejs/later": "^4.1.0",
+        "bson": "^4.7.2",
+        "espresso-iisojs": "^1.0.8",
+        "iconv-lite": "^0.6.3",
+        "ipaddr.js": "^2.0.1",
+        "jsonwebtoken": "^8.5.1",
+        "koa": "^2.13.4",
+        "koa-bodyparser": "^4.3.0",
+        "koa-compress": "^5.1.0",
+        "koa-jwt": "^4.0.3",
+        "koa-router": "^12.0.0",
+        "koa-static": "^5.0.0",
+        "mongodb": "^4.16.0",
+        "parsimmon": "^1.18.1",
+        "seedrandom": "^3.0.5"
+    },
+    "devDependencies": {
+        "@types/codemirror": "^5.60.15",
+        "@types/jsonwebtoken": "^8.5.8",
+        "@types/koa": "^2.13.5",
+        "@types/koa-compress": "^4.0.3",
+        "@types/koa-router": "^7.4.4",
+        "@types/koa-static": "^4.0.2",
+        "@types/mithril": "^2.2.6",
+        "@types/node": "^20.10.4",
+        "@types/parsimmon": "^1.10.9",
+        "@types/seedrandom": "^3.0.8",
+        "@typescript-eslint/eslint-plugin": "^6.14.0",
+        "@typescript-eslint/parser": "^6.14.0",
+        "codemirror": "^5.65.16",
+        "concurrently": "^8.2.2",
+        "esbuild": "^0.19.9",
+        "eslint": "^8.56.0",
+        "eslint-config-prettier": "^9.1.0",
+        "mithril": "^2.2.2",
+        "nodemon": "^3.1.0",
+        "npm-run-all": "^4.1.5",
+        "prettier": "^3.1.1",
+        "sql.js": "^1.7.0",
+        "svgo": "^2.8.0",
+        "typescript": "^5.3.3",
+        "yaml": "^1.10.2"
+    },
+    "engines": {
+        "node": ">=16.20.0"
+    },
+    "scripts": {
+        "test": "esbuild --log-level=warning --bundle --platform=node --target=node18 --packages=external --sourcemap=inline --outdir=test test/*.ts && node --test --enable-source-maps test/*.js && rm test/*.js",
+        "lint": "esbuild build/lint.ts --bundle --platform=node --target=node16 --packages=external | node",
+        "build": "esbuild build/build.ts --bundle --platform=node --target=node16 --packages=external | node",
+        "build:watch": "esbuild build/watch.ts --bundle --platform=node --target=node16 --packages=external | node",
+        "serve:cwmp": "nodemon dist/bin/genieacs-cwmp.js",
+        "serve:ext": "nodemon dist/bin/genieacs-ext.js",
+        "serve:fs": "nodemon dist/bin/genieacs-fs.js",
+        "serve:nbi": "nodemon dist/bin/genieacs-nbi.js",
+        "serve:ui": "nodemon dist/bin/genieacs-ui.js --ui-jwt-secret 77a41645e91d48e7334be1b0f89c789fb2df9532153d2",
+        "serve": "concurrently \"npm run serve:cwmp\" \"npm run serve:ext\" \"npm run serve:fs\" \"npm run serve:nbi\" \"npm run serve:ui\"",
+        "start": "npm-run-all -p build:watch serve"
+    }
 }
