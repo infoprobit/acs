@@ -1,61 +1,65 @@
-import m, { ClosureComponent, Component } from "mithril";
-import menu from "./menu.ts";
-import drawerComponent from "./drawer-component.ts";
-import userMenu from "./user-menu.ts";
-import adminMenu from "./admin-menu.ts";
-import * as overlay from "./overlay.ts";
-import { version as VERSION } from "../package.json";
-import datalist from "./datalist.ts";
-import { LOGO_SVG } from "../build/assets.ts";
+import m, { ClosureComponent, Component } from 'mithril';
+import menu from './menu.ts';
+import drawerComponent from './drawer-component.ts';
+import userMenu from './user-menu.ts';
+import * as overlay from './overlay.ts';
+import datalist from './datalist.ts';
+import { LOGO_SVG } from '../build/assets.ts';
 
-const adminPages = [
-  "presets",
-  "provisions",
-  "virtualParameters",
-  "files",
-  "config",
-  "users",
-  "permissions",
+const simplePages = [
+    'login',
 ];
 
 const component: ClosureComponent = (): Component => {
-  return {
-    view: (vnode) => {
-      let sideMenu, group;
+    return {
+        view: (vnode) => {
+            const attrs = {};
+            attrs['page'] = vnode.attrs['page'];
 
-      if (adminPages.includes(vnode.attrs["page"])) {
-        group = "admin";
-        const attrs = {};
-        attrs["page"] = vnode.attrs["page"];
-        sideMenu = m(adminMenu, attrs);
-      }
+            if (simplePages.includes(vnode.attrs['page'])) {
+                return [
+                    m(drawerComponent),
+                    m(
+                        'main',
+                        m(
+                            'div.container', {class: `page-${vnode.attrs['page']}`},
+                            m(
+                                'section.section.register.min-vh-100.d-flex.flex-column.align-items-center.justify-content-center.py-4',
+                                m(
+                                    'div.container',
+                                    m(
+                                        'div.row.justify-content-center',
+                                        m(
+                                            '#content.col-lg-4.col-md-6.d-flex.flex-column.align-items-center.justify-content-center',
+                                            [vnode.children],
+                                        ),
+                                    ),
+                                ),
+                            ),
+                        ),
+                    ),
+                    overlay.render(),
+                ];
+            }
 
-      const attrs = {};
-      attrs["page"] = group || vnode.attrs["page"];
-
-      return [
-        m("#header", [
-          m(
-            "div.logo",
-            m("img", { src: LOGO_SVG }),
-            m("span.version", "v" + VERSION),
-          ),
-          m(userMenu),
-          m(menu, attrs),
-          m(drawerComponent),
-        ]),
-        m(
-          "#content-wrapper",
-          sideMenu,
-          m("#content", { class: `page-${vnode.attrs["page"]}` }, [
-            vnode.children,
-          ]),
-        ),
-        overlay.render(),
-        m(datalist),
-      ];
-    },
-  };
+            return [
+                m(
+                    '#header.header.fixed-top.d-flex.align-items-center',
+                    m('a', {href: '/'},
+                      m('img', {class: 'logo d-flex align-items-center w-auto', src: LOGO_SVG}),
+                    ),
+                    m('i.bi.bi-list.toggle-sidebar-btn'),
+                    m(userMenu),
+                ),
+                m(menu, attrs),
+                m('main', {id: 'main', class: 'main'},
+                  m('section', {class: `section page-${vnode.attrs['page']}`}, [vnode.children]),
+                ),
+                overlay.render(),
+                m(datalist),
+            ];
+        },
+    };
 };
 
 export default component;
