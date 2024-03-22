@@ -226,8 +226,6 @@ async function generateIconsSprite(): Promise<void> {
 }
 
 async function copyStatic(): Promise<void> {
-    console.log('copyStatic');
-
     const files = [
         'LICENSE',
         'README.md',
@@ -259,9 +257,6 @@ async function copyStatic(): Promise<void> {
 }
 
 async function generateCss(): Promise<void> {
-
-    console.log('generateCss');
-
     const ctx = await esbuild.context({
                                           bundle        : true,
                                           absWorkingDir : INPUT_DIR,
@@ -273,6 +268,14 @@ async function generateCss(): Promise<void> {
                                           outfile       : path.join(OUTPUT_DIR, 'public/app.css'),
                                           target        : ['chrome109', 'safari15.6', 'firefox115', 'opera102', 'edge118'],
                                           metafile      : true,
+                                          loader        : {
+                                              '.png'  : 'dataurl',
+                                              '.woff' : 'dataurl',
+                                              '.woff2': 'dataurl',
+                                              '.eot'  : 'dataurl',
+                                              '.ttf'  : 'dataurl',
+                                              '.svg'  : 'dataurl',
+                                          },
                                       });
 
     await ctx.watch();
@@ -330,10 +333,10 @@ async function generateFrontendJs(): Promise<void> {
                                           format        : 'esm',
                                           target        : ['chrome109', 'safari15.6', 'firefox115', 'opera102', 'edge118'],
                                           entryPoints   : ['ui/app.ts'],
-                                          entryNames    : '[dir]/[name]',
-                                          outdir        : path.join(OUTPUT_DIR, 'public'),
-                                          plugins       : [packageDotJsonPlugin, inlineDepsPlugin, assetsPlugin],
-                                          metafile      : true,
+                                          entryNames : '[dir]/[name]',
+                                          outdir     : path.join(OUTPUT_DIR, 'public'),
+                                          plugins    : [packageDotJsonPlugin, inlineDepsPlugin, assetsPlugin],
+                                          metafile   : true,
                                       });
 
     await ctx.watch();

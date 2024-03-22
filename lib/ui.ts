@@ -221,12 +221,12 @@ router.get("/", async (ctx) => {
   ctx.body = `<!DOCTYPE html>
   <html>
     <head>
-      <title>GenieACS</title>
+      <title>ProACS</title>
       <link rel="shortcut icon" type="image/png" href="${FAVICON_PNG}" />
       <link rel="stylesheet" href="${APP_CSS}">
     </head>
     <body>
-    <noscript>GenieACS UI requires JavaScript to work. Please enable JavaScript in your browser.</noscript>
+    <noscript>ProACS UI requires JavaScript to work. Please enable JavaScript in your browser.</noscript>
       <script>
         window.clientConfig = ${JSON.stringify({
           ui: localCache.getUiConfig(ctx.state.configSnapshot),

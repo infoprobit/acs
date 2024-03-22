@@ -108,6 +108,7 @@ const inlineDepsPlugin = {
     name: 'inlineDeps',
     setup(build) {
         const deps = [
+            'bootstrap',
             'parsimmon',
             'espresso-iisojs',
             'codemirror',
@@ -268,6 +269,14 @@ async function generateCss(): Promise<void> {
                                         outfile       : path.join(OUTPUT_DIR, 'public/app.css'),
                                         target        : ['chrome109', 'safari15.6', 'firefox115', 'opera102', 'edge118'],
                                         metafile      : true,
+                                        loader        : {
+                                            '.png'  : 'dataurl',
+                                            '.woff' : 'dataurl',
+                                            '.woff2': 'dataurl',
+                                            '.eot'  : 'dataurl',
+                                            '.ttf'  : 'dataurl',
+                                            '.svg'  : 'dataurl',
+                                        },
                                     });
 
     for (const [k, v] of Object.entries(res.metafile.outputs)) {
@@ -277,6 +286,37 @@ async function generateCss(): Promise<void> {
                 path.join(INPUT_DIR, k),
             );
             break;
+        }
+    }
+}
+
+async function generateFrontendJs(): Promise<void> {
+    const res = await esbuild.build({
+                                        bundle        : true,
+                                        absWorkingDir : INPUT_DIR,
+                                        splitting     : true,
+                                        minify        : MODE === 'production',
+                                        sourcemap     : 'linked',
+                                        sourcesContent: false,
+                                        platform      : 'browser',
+                                        format        : 'esm',
+                                        target        : ['chrome109', 'safari15.6', 'firefox115', 'opera102', 'edge118'],
+                                        entryPoints   : ['ui/app.ts'],
+                                        entryNames : '[dir]/[name]-[hash]',
+                                        outdir     : path.join(OUTPUT_DIR, 'public'),
+                                        plugins    : [packageDotJsonPlugin, inlineDepsPlugin, assetsPlugin],
+                                        metafile   : true,
+                                    });
+
+    for (const [k, v] of Object.entries(res.metafile.outputs)) {
+        for (const imp of v.imports)
+            if (imp.external) throw new Error(`External import found: ${imp.path}`);
+
+        if (v.entryPoint === 'ui/app.ts') {
+            ASSETS.APP_JS = path.relative(
+                path.join(OUTPUT_DIR, 'public'),
+                path.join(INPUT_DIR, k),
+            );
         }
     }
 }
@@ -311,37 +351,6 @@ async function generateBackendJs(): Promise<void> {
         // Mark as executable
         const mode = (await fsAsync.lstat(p)).mode;
         await fsAsync.chmod(p, mode | 73);
-    }
-}
-
-async function generateFrontendJs(): Promise<void> {
-    const res = await esbuild.build({
-                                        bundle        : true,
-                                        absWorkingDir : INPUT_DIR,
-                                        splitting     : true,
-                                        minify        : MODE === 'production',
-                                        sourcemap     : 'linked',
-                                        sourcesContent: false,
-                                        platform      : 'browser',
-                                        format        : 'esm',
-                                        target        : ['chrome109', 'safari15.6', 'firefox115', 'opera102', 'edge118'],
-                                        entryPoints   : ['ui/app.ts'],
-                                        entryNames    : '[dir]/[name]-[hash]',
-                                        outdir        : path.join(OUTPUT_DIR, 'public'),
-                                        plugins       : [packageDotJsonPlugin, inlineDepsPlugin, assetsPlugin],
-                                        metafile      : true,
-                                    });
-
-    for (const [k, v] of Object.entries(res.metafile.outputs)) {
-        for (const imp of v.imports)
-            if (imp.external) throw new Error(`External import found: ${imp.path}`);
-
-        if (v.entryPoint === 'ui/app.ts') {
-            ASSETS.APP_JS = path.relative(
-                path.join(OUTPUT_DIR, 'public'),
-                path.join(INPUT_DIR, k),
-            );
-        }
     }
 }
 
