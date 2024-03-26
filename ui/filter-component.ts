@@ -111,12 +111,12 @@ const component: ClosureComponent<Attrs> = (initialVnode) => {
 
             attrs = vnode.attrs;
 
-            return m('div.filter', [
-                m('b.p-2', 'Filter: '),
+            return m('div.row', [
+                m('div.col-md-1.p-2', m('b', 'Filter: ')),
                 ...filterList.map((fltr, idx) => {
-                    return m('input', {
+                    return m('div.col-md-3', m('input', {
                         type    : 'text',
-                        class   : 'm-1' + `${(filterInvalid >> idx) & 1 ? ' error' : ''}`,
+                        class   : 'form-control' + `${(filterInvalid >> idx) & 1 ? ' is-invalid' : ''}`,
                         value   : fltr,
                         oninput : (e) => {
                             e.redraw        = false;
@@ -135,7 +135,7 @@ const component: ClosureComponent<Attrs> = (initialVnode) => {
                                 if (e.key === 'Enter' && filterTouched) onChange();
                             });
                         },
-                    });
+                    }));
                 }),
             ]);
         },

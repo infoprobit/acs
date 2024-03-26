@@ -581,7 +581,7 @@ img.logo {
     left: 0;
     bottom: 0;
     width: 300px;
-    z-index: 996;
+    z-index: 100;
     transition: all 0.3s;
     padding: 20px;
     overflow-y: auto;
@@ -1210,6 +1210,24 @@ img.logo {
     color: #012970;
 }
 
+.autocomplete {
+    box-shadow: 0 0 10px #ccc;
+    background-color: rgba(255, 255, 255, 0.9);
+    border: 1px solid var(--color1);
+    border-radius: 4px;
+    max-height: 300px;
+    overflow-y: auto;
+    transition: opacity var(--fade);
+
+    & > .suggestion {
+        padding: 5px;
+
+        &.selected,
+        &:hover {
+            background-color: var(--color3);
+        }
+    }
+}
 
 .overlay-wrapper {
     position: fixed;
@@ -1226,19 +1244,13 @@ img.logo {
     justify-content: center;
 
     & > .overlay {
-        max-width: 90vw;
-        max-height: 90vh;
         background-color: white;
         border: 1px solid var(--color1);
         border-radius: 10px;
-        padding: 10px;
+        padding: 20px;
         box-shadow: 0 0 15px #aaa;
         overflow: auto;
     }
-}
-
-.overlay > .put-form {
-    min-width: 700px;
 }
 
 .loading-overlay {
@@ -1255,6 +1267,18 @@ img.logo {
         background-repeat: no-repeat;
         background-size: 100% 100%;
     }
+}
+
+.modal-content {
+    border: none;
+}
+
+.modal-body, .modal-footer {
+    padding-bottom: 0;
+}
+
+form > .row, form > .row > * {
+    padding-right: 0;
 }
 
 .sort-icon {
@@ -1286,4 +1310,134 @@ img.logo {
 
 .actions-bar > button {
     margin-right: 10px;
+}
+
+.drawer-wrapper {
+    position: fixed;
+    z-index: 9999;
+    width: 500px;
+    top: 10px;
+    right: 10px;
+
+    & > .drawer {
+        background-color: rgba(255, 255, 255, 0.9);
+        border-bottom-left-radius: 6px;
+        border-bottom-right-radius: 6px;
+        border-bottom: 1px solid var(--color1);
+        border-left: 1px solid var(--color1);
+        border-right: 1px solid var(--color1);
+        margin-top: -1px;
+        box-shadow: 0 0 10px #ccc;
+        overflow: hidden;
+        transition: height var(--fade),
+        opacity var(--fade);
+
+        & > div {
+            padding: 0.3em;
+        }
+
+        & > .status {
+            display: flex;
+
+            & > span {
+                margin-right: 1em;
+                padding-left: 0.2em;
+                padding-right: 0.2em;
+                border-radius: 0.4em;
+            }
+
+            & > .pending.active {
+                &.active {
+                    animation: 0.5s linear 0s infinite alternate pending-blink;
+                }
+            }
+
+            & > .stale.active {
+                background-color: hsl(var(--status-gray) / 0.9);
+            }
+
+            & > .fault.active {
+                background-color: hsl(var(--status-red) / 0.9);
+            }
+
+            & > .queued.active {
+                font-weight: bold;
+            }
+
+            & > .actions {
+                flex-grow: 1;
+                text-align: right;
+            }
+        }
+
+        & > .staging {
+            & .parameter {
+                font-style: italic;
+                max-width: 500px;
+                text-overflow: ellipsis;
+                display: inline-block;
+                overflow: hidden;
+                vertical-align: text-bottom;
+            }
+
+            & input {
+                width: 100%;
+                box-sizing: border-box;
+                padding: 0.3em;
+                margin-top: 0.3em;
+                margin-bottom: 0.3em;
+            }
+
+            & .actions {
+                text-align: right;
+            }
+        }
+
+        & > .queue {
+            max-height: 400px;
+            overflow-y: auto;
+
+            & > .pending {
+                animation: 0.5s linear 0s infinite alternate pending-blink;
+                border-radius: 0.4em;
+            }
+
+            & > .stale {
+                background-color: hsl(var(--status-gray) / 0.9);
+                border-radius: 0.4em;
+            }
+
+            & > .fault {
+                background-color: hsl(var(--status-red) / 0.9);
+                border-radius: 0.4em;
+            }
+
+            & .parameter {
+                font-style: italic;
+                max-width: 400px;
+                text-overflow: ellipsis;
+                display: inline-block;
+                overflow: hidden;
+                vertical-align: text-bottom;
+            }
+
+            & .value {
+                max-width: 200px;
+                text-overflow: ellipsis;
+                display: inline-block;
+                overflow: hidden;
+                vertical-align: text-bottom;
+                white-space: nowrap;
+            }
+
+            & > div {
+                display: flex;
+
+                & > .actions {
+                    flex-grow: 1;
+                    text-align: right;
+                }
+            }
+        }
+    }
 }
