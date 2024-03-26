@@ -45,15 +45,13 @@ function putActionHandler(action, _object, isNew): Promise<ValidationErrors> {
             delete object['password'];
             delete object['confirm'];
 
-            if (!id) return void resolve({_id: 'ID can not be empty'});
+            if (!id) return void resolve({_id: 'Username can not be empty'});
 
             if (isNew) {
                 if (!password) {
                     return void resolve({password: 'Password can not be empty'});
                 } else if (password !== confirm) {
-                    return void resolve({
-                                            confirm: 'Confirm password doesn\'t match password',
-                                        });
+                    return void resolve({confirm: 'Confirm password doesn\'t match password'});
                 }
             }
 
@@ -118,15 +116,10 @@ const getDownloadUrl = memoize((filter) => {
     const cols = {};
     for (const attr of attributes) cols[attr.label] = attr.id;
 
-    return `api/users.csv?${m.buildQueryString({
-                                                   filter : stringify(filter),
-                                                   columns: JSON.stringify(cols),
-                                               })}`;
+    return `api/users.csv?${m.buildQueryString({filter: stringify(filter), columns: JSON.stringify(cols)})}`;
 });
 
-export function init(
-    args: Record<string, unknown>,
-): Promise<Record<string, unknown>> {
+export function init(args: Record<string, unknown>): Promise<Record<string, unknown>> {
     if (!window.authorizer.hasAccess('users', 2)) {
         return Promise.reject(
             new Error('You are not authorized to view this page'),
@@ -141,7 +134,7 @@ export function init(
 export const component: ClosureComponent = (): Component => {
     return {
         view: (vnode) => {
-            document.title = 'Users - GenieACS';
+            document.title = 'Users - ProACS';
 
             function showMore(): void {
                 vnode.state['showCount'] =
@@ -175,9 +168,7 @@ export const component: ClosureComponent = (): Component => {
                 m.route.set('/admin/users', ops);
             }
 
-            let filter = vnode.attrs['filter']
-                ? memoizedParse(vnode.attrs['filter'])
-                : true;
+            let filter = vnode.attrs['filter'] ? memoizedParse(vnode.attrs['filter']) : true;
             filter     = unpackSmartQuery(filter);
 
             const users = store.fetch('users', filter, {
@@ -197,8 +188,7 @@ export const component: ClosureComponent = (): Component => {
             }
 
             const downloadUrl = getDownloadUrl(filter);
-
-            const canWrite = window.authorizer.hasAccess('users', 3);
+            const canWrite    = window.authorizer.hasAccess('users', 3);
 
             const attrs                    = {};
             attrs['attributes']            = attributes;
@@ -227,9 +217,7 @@ export const component: ClosureComponent = (): Component => {
                                                 return new Promise<void>((resolve) => {
                                                     putActionHandler(action, object, false)
                                                         .then((errors) => {
-                                                            const errorList = errors
-                                                                ? Object.values(errors)
-                                                                : [];
+                                                            const errorList = errors ? Object.values(errors) : [];
                                                             if (errorList.length) {
                                                                 for (const err of errorList)
                                                                     notifications.push('error', err);
@@ -278,7 +266,7 @@ export const component: ClosureComponent = (): Component => {
                                 );
                             },
                         },
-                        m('i.bi.bi-pencil-square'), ' Edit',
+                        [m('i.bi.bi-pencil-square'), ' ', 'Edit'],
                     ),
                 ];
             };
@@ -296,9 +284,9 @@ export const component: ClosureComponent = (): Component => {
                 attrs['actionsCallback'] = (selected: Set<string>): Children => {
                     return [
                         m(
-                            'button..btn.btn-outline-primary',
+                            'button.btn.btn-outline-primary',
                             {
-                                title  : 'Create new user',
+                                title  : 'Create New User',
                                 onclick: () => {
                                     let cb: () => Children = null;
                                     const comp             = m(
@@ -309,9 +297,7 @@ export const component: ClosureComponent = (): Component => {
                                                     return new Promise<void>((resolve) => {
                                                         putActionHandler(action, object, true)
                                                             .then((errors) => {
-                                                                const errorList = errors
-                                                                    ? Object.values(errors)
-                                                                    : [];
+                                                                const errorList = errors ? Object.values(errors) : [];
                                                                 if (errorList.length) {
                                                                     for (const err of errorList)
                                                                         notifications.push('error', err);
@@ -331,11 +317,9 @@ export const component: ClosureComponent = (): Component => {
                                         ),
                                     );
                                     cb                     = () => comp;
-                                    overlay.open(
-                                        cb,
-                                        () =>
-                                            !comp.state['current']['modified'] ||
-                                            confirm('You have unsaved changes. Close anyway?'),
+                                    overlay.open(cb, () =>
+                                        !comp.state['current']['modified'] ||
+                                        confirm('You have unsaved changes. Close anyway?'),
                                     );
                                 },
                             },
@@ -347,21 +331,14 @@ export const component: ClosureComponent = (): Component => {
                                 title   : 'Delete Selected Users',
                                 disabled: !selected.size,
                                 onclick : (e) => {
-                                    if (!confirm(`Deleting ${selected.size} users. Are you sure?`))
+                                    if (!confirm(`Deleting ${selected.size} User(s). Are you sure?`))
                                         return;
-
                                     e.redraw          = false;
                                     e.target.disabled = true;
-                                    Promise.all(
-                                        Array.from(selected).map((id) =>
-                                                                     store.deleteResource('users', id),
-                                        ),
-                                    )
+                                    Promise
+                                        .all(Array.from(selected).map((id) => store.deleteResource('users', id)))
                                         .then((res) => {
-                                            notifications.push(
-                                                'success',
-                                                `${res.length} users deleted`,
-                                            );
+                                            notifications.push('success', `${res.length} User(s) Deleted!`);
                                             store.setTimestamp(Date.now());
                                         })
                                         .catch((err) => {
@@ -384,16 +361,10 @@ export const component: ClosureComponent = (): Component => {
 
             return [
                 m('.pagetitle', m('h1', 'Listing users')),
-                m('.row', m(
-                    '.col-lg-12',
-                    m(
-                        '.card',
-                        m('.card-body', [
-                            m('.card-title', m(filterComponent, filterAttrs)),
-                            m('loading', {queries: [users, count]}, m(indexTableComponent, attrs)),
-                        ]),
-                    ),
-                )),
+                m('.row', m('.col-lg-12', m('.card', m('.card-body', [
+                    m('.card-title', m(filterComponent, filterAttrs)),
+                    m('loading', {queries: [users, count]}, m(indexTableComponent, attrs)),
+                ])))),
             ];
         },
     };

@@ -48,10 +48,15 @@ const component: ClosureComponent = (): Component => {
                     m('a', {href: '/'},
                       m('img', {class: 'logo d-flex align-items-center w-auto', src: LOGO_SVG}),
                     ),
-                    m('i.bi.bi-list.toggle-sidebar-btn'),
+                    m('i.bi.bi-list.toggle-sidebar-btn', {
+                        onclick: () => {
+                            document.body.classList.toggle('toggle-sidebar');
+                        },
+                    }),
                     m(userMenu),
                 ),
                 m(menu, attrs),
+                m(drawerComponent),
                 m('main', {id: 'main', class: 'main'},
                   m('section', {class: `section page-${vnode.attrs['page']}`}, [vnode.children]),
                 ),
