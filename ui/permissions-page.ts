@@ -358,7 +358,7 @@ export const component: ClosureComponent = (): Component => {
             };
 
             return [
-                m('.pagetitle', m('h1', 'Listing permissions')),
+                m('.pagetitle', m('h1', 'Listing Permissions')),
                 m('.row', m('.col-lg-12', m('.card', m('.card-body', [
                     m('.card-title', m(filterComponent, filterAttrs)),
                     m('loading', {queries: [permissions, count]}, m(indexTableComponent, attrs)),

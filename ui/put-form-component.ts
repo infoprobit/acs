@@ -96,20 +96,21 @@ function createField(current, attr, focus): Children {
     }
 
     if (attr.type === 'file') {
-        return m('input', {
+        const file = m('input', {
             type    : 'file',
             name    : attr.id,
-            oncreate: focus
-                ? (_vnode) => {
-                    (_vnode.dom as HTMLInputElement).focus();
-                }
-                : null,
+            class   : 'form-control',
+            oncreate: focus ? (_vnode) => {
+                (_vnode.dom as HTMLInputElement).focus();
+            } : null,
             onchange: (e) => {
                 current.object[attr.id] = e.target.files;
                 current.modified        = true;
                 e.redraw                = false;
             },
         });
+
+        return m('div.col-sm-9', file);
     }
 
     if (attr.type === 'textarea') {
