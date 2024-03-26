@@ -360,7 +360,7 @@ export const component: ClosureComponent = (): Component => {
             };
 
             return [
-                m('.pagetitle', m('h1', 'Listing users')),
+                m('.pagetitle', m('h1', 'Listing Users')),
                 m('.row', m('.col-lg-12', m('.card', m('.card-body', [
                     m('.card-title', m(filterComponent, filterAttrs)),
                     m('loading', {queries: [users, count]}, m(indexTableComponent, attrs)),
