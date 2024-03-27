@@ -1210,6 +1210,32 @@ img.logo {
     color: #012970;
 }
 
+/*--------------------------------------------------------------
+# Project
+--------------------------------------------------------------*/
+.CodeMirror {
+    display: block;
+    border: 1px solid var(--color1);
+    background-color: var(--color3);
+    border-radius: 4px;
+    transition: border-color var(--fade),
+    background-color var(--fade);
+
+    &.error {
+        background-color: #efcbcf;
+        border-color: #e6b2b7;
+    }
+
+    &:focus,
+    &:hover {
+        border-color: var(--color4);
+    }
+}
+
+.CodeMirror-code {
+    font-size: small;
+}
+
 .autocomplete {
     box-shadow: 0 0 10px #ccc;
     background-color: rgba(255, 255, 255, 0.9);

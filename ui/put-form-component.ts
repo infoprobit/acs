@@ -122,13 +122,11 @@ function createField(current, attr, focus): Children {
             rows      : attr.rows || 4,
             class     : 'form-control',
             style     : 'resize: none;',
-            oncreate  : focus
-                ? (_vnode) => {
-                    const dom = _vnode.dom as HTMLInputElement;
-                    dom.focus();
-                    dom.setSelectionRange(dom.value.length, dom.value.length);
-                }
-                : null,
+            oncreate  : focus ? (_vnode) => {
+                const dom = _vnode.dom as HTMLInputElement;
+                dom.focus();
+                dom.setSelectionRange(dom.value.length, dom.value.length);
+            } : null,
             oninput   : (e) => {
                 current.object[attr.id] = e.target.value;
                 current.modified        = true;
@@ -211,10 +209,16 @@ const component: ClosureComponent<Attrs> = () => {
                     focus = focused = true;
 
                 form.push(
-                    m(
-                        'div.row.mb-3',
-                        m('label', {class: 'col-sm-3 col-form-label p-0', for: attr.id}, attr.label || attr.id),
-                        createField(current, attr, focus),
+                    m('div', {class: (attr.type === 'code') ? 'row mb-12 code' : 'row mb-3'},
+                      m(
+                          'label',
+                          {
+                              class: (attr.type === 'code') ? 'form-label' : 'col-sm-3 col-form-label',
+                              for  : attr.id,
+                          },
+                          attr.label || attr.id,
+                      ),
+                      createField(current, attr, focus),
                     ),
                 );
             }

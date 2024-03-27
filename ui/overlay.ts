@@ -27,9 +27,13 @@ export function close(callback: OverlayCallback, force = true): boolean {
 
 export function render(): Children {
     if (overlayCallback) {
+        const modalSize = (overlayCallback()['attrs'] !== undefined && overlayCallback()['attrs'].modalSize !== undefined)
+            ? overlayCallback()['attrs'].modalSize : 'modal-lg';
+
         return m(
-            '.overlay-wrapper.modal',
+            'div',
             {
+                class         : 'overlay-wrapper modal',
                 tabindex      : 0,
                 onclick       : () => {
                     close(overlayCallback, false);
@@ -49,8 +53,9 @@ export function render(): Children {
                 },
             },
             m(
-                '.overlay.modal-dialog.modal-lg',
+                'div',
                 {
+                    class  : 'overlay modal-dialog ' + modalSize,
                     onclick: (e: any) => {
                         e.stopPropagation();
                     },
