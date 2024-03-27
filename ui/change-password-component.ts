@@ -21,7 +21,7 @@ const component: ClosureComponent<Attrs> = () => {
             const form = [
                 m(
                     'div.row.mb-3',
-                    m('label', {class: 'col-sm-3 col-form-label p-0', for: 'username'}, 'Username'),
+                    m('label', {class: 'col-sm-3 col-form-label', for: 'username'}, 'Username'),
                     m(
                         'div.col-sm-9',
                         m('input', {
@@ -52,7 +52,7 @@ const component: ClosureComponent<Attrs> = () => {
                 form.push(
                     m(
                         'div.row.mb-3',
-                        m('label', {class: 'col-sm-3 col-form-label p-0', for: f}, l),
+                        m('label', {class: 'col-sm-3 col-form-label', for: f}, l),
                         m(
                             'div.col-sm-9',
                             m('input', {

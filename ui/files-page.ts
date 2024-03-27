@@ -94,7 +94,7 @@ export function init(args: Record<string, unknown>): Promise<Record<string, unkn
 export const component: ClosureComponent = (): Component => {
     return {
         view: (vnode) => {
-            document.title = 'Files - GenieACS';
+            document.title = 'Files - ProACS';
 
             function showMore(): void {
                 vnode.state['showCount'] = (vnode.state['showCount'] || PAGE_SIZE) + PAGE_SIZE;
@@ -131,7 +131,6 @@ export const component: ClosureComponent = (): Component => {
             });
 
             const count = store.count('files', filter);
-
             const downloadUrl = getDownloadUrl(filter);
 
             const attrs                    = {};
@@ -175,13 +174,13 @@ export const component: ClosureComponent = (): Component => {
                                                     };
 
                                                     if (!file) {
-                                                        notifications.push('error', 'File not selected');
+                                                        notifications.push('error', 'File not selected!');
                                                         return;
                                                     }
 
                                                     if (await store.resourceExists('files', file.name)) {
                                                         store.setTimestamp(Date.now());
-                                                        notifications.push('error', 'File already exists');
+                                                        notifications.push('error', 'File already exists!');
                                                         return;
                                                     }
 
@@ -238,7 +237,7 @@ export const component: ClosureComponent = (): Component => {
                                 disabled: !selected.size,
                                 onclick : (e) => {
                                     if (
-                                        !confirm(`Deleting ${selected.size} files. Are you sure?`)
+                                        !confirm(`Deleting ${selected.size} File(s). Are you sure?`)
                                     )
                                         return;
 
@@ -247,7 +246,7 @@ export const component: ClosureComponent = (): Component => {
                                     Promise
                                         .all(Array.from(selected).map((id) => store.deleteResource('files', id)))
                                         .then((res) => {
-                                            notifications.push('success', `${res.length} files deleted`);
+                                            notifications.push('success', `${res.length} File(s) Deleted!`);
                                             store.setTimestamp(Date.now());
                                         })
                                         .catch((err) => {

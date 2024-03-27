@@ -21,7 +21,7 @@ export function init(
 export const component: ClosureComponent = (): Component => {
   return {
     view: (vnode) => {
-      document.title = `${vnode.attrs["deviceId"]} - Devices - GenieACS`;
+      document.title = `${vnode.attrs["deviceId"]} - Devices - ProACS`;
 
       const dev = store.fetch("devices", vnode.attrs["deviceFilter"]);
       if (!dev.value.length) {

@@ -63,7 +63,7 @@ export function init(
 export const component: ClosureComponent = (): Component => {
   return {
     view: (vnode) => {
-      document.title = "Faults - GenieACS";
+      document.title = "Faults - ProACS";
 
       function showMore(): void {
         vnode.state["showCount"] =
