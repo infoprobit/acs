@@ -1214,6 +1214,7 @@ img.logo {
 # Project
 --------------------------------------------------------------*/
 .CodeMirror {
+    min-width: 400px;
     display: block;
     border: 1px solid var(--color1);
     background-color: var(--color3);
@@ -1271,9 +1272,8 @@ img.logo {
 
     & > .overlay {
         background-color: white;
-        border: 1px solid var(--color1);
         border-radius: 10px;
-        padding: 20px;
+        padding: 10px;
         box-shadow: 0 0 15px #aaa;
         overflow: auto;
     }
@@ -1293,6 +1293,10 @@ img.logo {
         background-repeat: no-repeat;
         background-size: 100% 100%;
     }
+}
+
+.modal-dialog {
+    pointer-events: auto;
 }
 
 .modal-content {
@@ -1465,5 +1469,58 @@ form > .row, form > .row > * {
                 }
             }
         }
+    }
+}
+
+span.long-text {
+    display: inline-block;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 400px;
+    /*
+    "overflow: hidden" changes the baseline as explained here:
+    https://stackoverflow.com/questions/9273016/why-is-this-inline-block-element-pushed-downward
+    */
+    vertical-align: top;
+}
+
+span.long-text-overflowed {
+    cursor: pointer;
+
+    &:hover {
+        text-decoration: underline;
+        text-decoration-style: dotted;
+    }
+}
+
+textarea.long-text {
+    font-family: monospace;
+    font-size: 13px;
+    margin-bottom: 20px;
+}
+
+span.inform {
+    & > * {
+        margin-right: 0.5em;
+    }
+}
+
+span.tag {
+    display: inline-block;
+    background-image: url('data:image/svg+xml;utf-8,<svg xmlns="http://www.w3.org/2000/svg" width="190" height="16"><path d="M6.59 15.42l-6-6a2 2 0 0 1 0-2.83l6-6A2 2 0 0 1 8 0h180a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H8a2 2 0 0 1-1.41-.58zM4.35 6.59A2 2 0 1 0 7.17 9.4 2 2 0 0 0 4.35 6.6z" fill="%23e8d5b2"></path></svg>');
+    background-size: cover;
+    background-repeat: no-repeat;
+    border-radius: 0.2em;
+    padding: 0.2em 0.2em 0.2em 1em;
+
+    & > span {
+        margin-left: 0.5em;
+    }
+}
+
+.tags {
+    & > .tag {
+        margin-right: 0.5em;
     }
 }

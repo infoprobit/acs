@@ -266,7 +266,7 @@ export const component: ClosureComponent = (): Component => {
                                 );
                             },
                         },
-                        [m('i.bi.bi-pencil-square'), ' ', 'Edit'],
+                        [m('i.bi.bi-pencil-square'), m.trust('&nbsp;'), 'Edit'],
                     ),
                 ];
             };
@@ -323,7 +323,7 @@ export const component: ClosureComponent = (): Component => {
                                     );
                                 },
                             },
-                            'New',
+                            [m('i.bi.bi-plus-circle'), m.trust('&nbsp;'), 'New'],
                         ),
                         m(
                             'button.btn.btn-outline-danger',
@@ -347,7 +347,7 @@ export const component: ClosureComponent = (): Component => {
                                         });
                                 },
                             },
-                            'Delete',
+                            [m('i.bi.bi-trash'), m.trust('&nbsp;'), 'Delete'],
                         ),
                     ];
                 };
