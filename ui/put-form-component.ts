@@ -241,7 +241,7 @@ const component: ClosureComponent<Attrs> = () => {
                                 });
                             },
                         },
-                        'Delete',
+                        [m('i.bi.bi-trash'), m.trust('&nbsp;'), 'Delete'],
                     ) as VnodeDOM,
                 );
             }
@@ -253,28 +253,25 @@ const component: ClosureComponent<Attrs> = () => {
                     '.modal-header',
                     m('h5.modal-title', `${current.isNew ? 'New' : 'Editing'} ${singular[resource] || resource}`),
                 ),
-                m(
-                    '.modal-body',
-                    m(
-                        'form.row',
-                        {
-                            onsubmit: (e) => {
-                                e.redraw = false;
-                                // const onsubmit = e.target.onsubmit;
-                                e.preventDefault();
-                                // e.target.onsubmit = null;
-                                (submit.dom as HTMLFormElement).disabled = true;
-                                // submit.dom.textContent = "Loading ...";
-                                void actionHandler('save', current.object).finally(() => {
-                                    // submit.dom.textContent = "Save";
-                                    // e.target.onsubmit = onsubmit;
-                                    (submit.dom as HTMLFormElement).disabled = false;
-                                });
-                            },
+                m('.modal-body', m(
+                    'form.row',
+                    {
+                        onsubmit: (e) => {
+                            e.redraw = false;
+                            // const onsubmit = e.target.onsubmit;
+                            e.preventDefault();
+                            // e.target.onsubmit = null;
+                            (submit.dom as HTMLFormElement).disabled = true;
+                            // submit.dom.textContent = "Loading ...";
+                            void actionHandler('save', current.object).finally(() => {
+                                // submit.dom.textContent = "Save";
+                                // e.target.onsubmit = onsubmit;
+                                (submit.dom as HTMLFormElement).disabled = false;
+                            });
                         },
-                        form,
-                    ),
-                ),
+                    },
+                    form,
+                )),
 
             ];
             return m('div.modal-content', children);

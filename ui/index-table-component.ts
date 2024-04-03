@@ -151,7 +151,7 @@ function renderTable(
     }
 
     if (!rows.length)
-        rows.push(m('tr.empty', m('td', {colspan: labels.length}, m('p.text-center', 'No records'))));
+        rows.push(m('tr.empty', m('td.text-center', {colspan: labels.length}, 'No records')));
 
     // Table footer
     const footerElements = [];
