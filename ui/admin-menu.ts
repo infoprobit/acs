@@ -1,88 +1,105 @@
-import m, { ClosureComponent, Component } from "mithril";
+import m, { ClosureComponent, Component } from 'mithril';
 
 const component: ClosureComponent = (): Component => {
-  return {
-    view: (vnode) => {
-      const active = { [vnode.attrs["page"]]: "active" };
-      const tabs = [];
+    return {
+        view: (vnode) => {
+            const active = {[vnode.attrs['page']]: 'active'};
+            const items  = [];
 
-      if (window.authorizer.hasAccess("presets", 1)) {
-        tabs.push(
-          m(
-            "li",
-            { class: active["presets"] },
-            m("a", { href: "#!/admin/presets" }, "Presets"),
-          ),
-        );
-      }
+            if (window.authorizer.hasAccess('presets', 1)) {
+                items.push(
+                    m(
+                        'li',
+                        m(
+                            'a',
+                            {href: '#!/admin/presets', class: active['presets']},
+                            [m('i.bi.bi-circle'), m('span', 'Presets')],
+                        ),
+                    ),
+                );
+            }
 
-      if (window.authorizer.hasAccess("provisions", 1)) {
-        tabs.push(
-          m(
-            "li",
-            { class: active["provisions"] },
-            m("a", { href: "#!/admin/provisions" }, "Provisions"),
-          ),
-        );
-      }
+            if (window.authorizer.hasAccess('provisions', 1)) {
+                items.push(
+                    m(
+                        'li',
+                        m(
+                            'a',
+                            {href: '#!/admin/provisions', class: active['provisions']},
+                            [m('i.bi.bi-circle'), m('span', 'Provisions')],
+                        ),
+                    ),
+                );
+            }
 
-      if (window.authorizer.hasAccess("virtualParameters", 1)) {
-        tabs.push(
-          m(
-            "li",
-            { class: active["virtualParameters"] },
-            m(
-              "a",
-              { href: "#!/admin/virtualParameters" },
-              "Virtual Parameters",
-            ),
-          ),
-        );
-      }
+            if (window.authorizer.hasAccess('virtualParameters', 1)) {
+                items.push(
+                    m(
+                        'li',
+                        m(
+                            'a',
+                            {href: '#!/admin/virtualParameters', class: active['virtualParameters']},
+                            [m('i.bi.bi-circle'), m('span', 'Virtual Parameters')],
+                        ),
+                    ),
+                );
+            }
 
-      if (window.authorizer.hasAccess("files", 1)) {
-        tabs.push(
-          m(
-            "li",
-            { class: active["files"] },
-            m("a", { href: "#!/admin/files" }, "Files"),
-          ),
-        );
-      }
+            if (window.authorizer.hasAccess('files', 1)) {
+                items.push(
+                    m(
+                        'li',
+                        m(
+                            'a',
+                            {href: '#!/admin/files', class: active['files']},
+                            [m('i.bi.bi-circle'), m('span', 'Files')],
+                        ),
+                    ),
+                );
+            }
 
-      if (window.authorizer.hasAccess("config", 1)) {
-        tabs.push(
-          m(
-            "li",
-            { class: active["config"] },
-            m("a", { href: "#!/admin/config" }, "Config"),
-          ),
-        );
-      }
+            if (window.authorizer.hasAccess('config', 1)) {
+                items.push(
+                    m(
+                        'li',
+                        m(
+                            'a',
+                            {href: '#!/admin/config', class: active['config']},
+                            [m('i.bi.bi-circle'), m('span', 'Config')],
+                        ),
+                    ),
+                );
+            }
 
-      if (window.authorizer.hasAccess("permissions", 1)) {
-        tabs.push(
-          m(
-            "li",
-            { class: active["permissions"] },
-            m("a", { href: "#!/admin/permissions" }, "Permissions"),
-          ),
-        );
-      }
+            if (window.authorizer.hasAccess('permissions', 1)) {
+                items.push(
+                    m(
+                        'li',
+                        m(
+                            'a',
+                            {href: '#!/admin/permissions', class: active['permissions']},
+                            [m('i.bi.bi-circle'), m('span', 'Permissions')],
+                        ),
+                    ),
+                );
+            }
 
-      if (window.authorizer.hasAccess("users", 1)) {
-        tabs.push(
-          m(
-            "li",
-            { class: active["users"] },
-            m("a", { href: "#!/admin/users" }, "Users"),
-          ),
-        );
-      }
+            if (window.authorizer.hasAccess('users', 1)) {
+                items.push(
+                    m(
+                        'li',
+                        m(
+                            'a',
+                            {href: '#!/admin/users', class: active['users']},
+                            [m('i.bi.bi-circle'), m('span', 'Users')],
+                        ),
+                    ),
+                );
+            }
 
-      return m("nav#side-menu", m("ul", tabs));
-    },
-  };
+            return m('ul', {class: 'nav-content'}, items);
+        },
+    };
 };
 
 export default component;

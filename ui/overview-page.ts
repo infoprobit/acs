@@ -38,7 +38,7 @@ export function init(): Promise<Record<string, unknown>> {
 export const component: ClosureComponent = (): Component => {
   return {
     view: (vnode) => {
-      document.title = "Overview - GenieACS";
+      document.title = "Overview - ProACS";
       const children = [];
       for (const group of Object.values(GROUPS)) {
         if (group["label"])

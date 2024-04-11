@@ -15,7 +15,7 @@ import * as filesPage from "./files-page.ts";
 import * as configPage from "./config-page.ts";
 import * as permissionsPage from "./permissions-page.ts";
 import * as usersPage from "./users-page.ts";
-import Authorizer from "../lib//common/authorizer.ts";
+import Authorizer from "../lib/common/authorizer.ts";
 import * as notifications from "./notifications.ts";
 import { contextifyComponent } from "./components.ts";
 import { PermissionSet, UiConfig } from "../lib/types.ts";
@@ -116,10 +116,7 @@ m.route(document.body, "/overview", {
   "/admin": redirectAdminPage(),
   "/admin/presets": pagify("presets", presetsPage),
   "/admin/provisions": pagify("provisions", provisionsPage),
-  "/admin/virtualParameters": pagify(
-    "virtualParameters",
-    virtualParametersPage,
-  ),
+  "/admin/virtualParameters": pagify("virtualParameters", virtualParametersPage),
   "/admin/files": pagify("files", filesPage),
   "/admin/config": pagify("config", configPage),
   "/admin/users": pagify("users", usersPage),
