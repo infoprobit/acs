@@ -8,6 +8,24 @@
 --------------------------------------------------------------*/
 :root {
     scroll-behavior: smooth;
+
+    --base-font-size: 13px;
+    --base-line-height: 16px;
+
+    --color1: #ebe0bf;
+    --color2: #b9b098;
+    --color3: #f2ebd5;
+    --color4: #046380;
+    --color5: #002f2f;
+
+    --fade: 0.2s;
+
+    --disabled: #666;
+
+    --status-red: 0 80% 80%;
+    --status-green: 125 80% 80%;
+    --status-gray: 58 3% 80%;
+    --status-yellow: 46 79% 80%;
 }
 
 body {
@@ -1345,23 +1363,11 @@ form > .row, form > .row > * {
 .drawer-wrapper {
     position: fixed;
     z-index: 9999;
-    width: 500px;
+    min-width: 500px;
     top: 10px;
     right: 10px;
 
     & > .drawer {
-        background-color: rgba(255, 255, 255, 0.9);
-        border-bottom-left-radius: 6px;
-        border-bottom-right-radius: 6px;
-        border-bottom: 1px solid var(--color1);
-        border-left: 1px solid var(--color1);
-        border-right: 1px solid var(--color1);
-        margin-top: -1px;
-        box-shadow: 0 0 10px #ccc;
-        overflow: hidden;
-        transition: height var(--fade),
-        opacity var(--fade);
-
         & > div {
             padding: 0.3em;
         }
@@ -1370,9 +1376,7 @@ form > .row, form > .row > * {
             display: flex;
 
             & > span {
-                margin-right: 1em;
-                padding-left: 0.2em;
-                padding-right: 0.2em;
+                padding: 0.2em 0.4em;
                 border-radius: 0.4em;
             }
 
@@ -1397,17 +1401,24 @@ form > .row, form > .row > * {
             & > .actions {
                 flex-grow: 1;
                 text-align: right;
+
+                & > button {
+                    margin-left: 10px;
+                }
             }
         }
 
         & > .staging {
+            & .row {
+                min-width: 600px;
+                margin-bottom: 1em;
+            }
+
             & .parameter {
                 font-style: italic;
                 max-width: 500px;
-                text-overflow: ellipsis;
-                display: inline-block;
+                display: inline-flex;
                 overflow: hidden;
-                vertical-align: text-bottom;
             }
 
             & input {
@@ -1415,17 +1426,36 @@ form > .row, form > .row > * {
                 box-sizing: border-box;
                 padding: 0.3em;
                 margin-top: 0.3em;
-                margin-bottom: 0.3em;
+                margin-bottom: 1em;
             }
 
             & .actions {
                 text-align: right;
+
+                & > button {
+                    margin-left: 10px;
+                }
             }
         }
 
         & > .queue {
             max-height: 400px;
             overflow-y: auto;
+
+            & span {
+                text-overflow: ellipsis;
+                display: inline-flex;
+                overflow: hidden;
+                vertical-align: text-bottom;
+            }
+
+            & > .queued {
+                padding: 0.3em;
+
+                & > span {
+                    margin-top: 0.3em;
+                }
+            }
 
             & > .pending {
                 animation: 0.5s linear 0s infinite alternate pending-blink;
@@ -1435,6 +1465,12 @@ form > .row, form > .row > * {
             & > .stale {
                 background-color: hsl(var(--status-gray) / 0.9);
                 border-radius: 0.4em;
+                padding: 0.3em;
+                margin-top: 0.3em;
+
+                & > span {
+                    margin-top: 0.3em;
+                }
             }
 
             & > .fault {
@@ -1445,18 +1481,11 @@ form > .row, form > .row > * {
             & .parameter {
                 font-style: italic;
                 max-width: 400px;
-                text-overflow: ellipsis;
-                display: inline-block;
-                overflow: hidden;
-                vertical-align: text-bottom;
+                margin: 0 5px;
             }
 
             & .value {
                 max-width: 200px;
-                text-overflow: ellipsis;
-                display: inline-block;
-                overflow: hidden;
-                vertical-align: text-bottom;
                 white-space: nowrap;
             }
 
@@ -1466,6 +1495,10 @@ form > .row, form > .row > * {
                 & > .actions {
                     flex-grow: 1;
                     text-align: right;
+
+                    & > button {
+                        margin-left: 10px;
+                    }
                 }
             }
         }
@@ -1522,5 +1555,11 @@ span.tag {
 .tags {
     & > .tag {
         margin-right: 0.5em;
+    }
+}
+
+.parameter-value {
+    & > span.parameter {
+        cursor: pointer;
     }
 }

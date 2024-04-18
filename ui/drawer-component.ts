@@ -1,7 +1,6 @@
 import m, { Child, Children, ClosureComponent, Component, VnodeDOM } from 'mithril';
 import * as store from './store.ts';
 import * as notifications from './notifications.ts';
-import { getIcon } from './icons.ts';
 import { clear, commit, deleteTask, getQueue, getStaging, QueueTask, queueTask, StageTask } from './task-queue.ts';
 
 const invalid: WeakSet<StageTask> = new WeakSet();
@@ -47,6 +46,7 @@ function renderStagingSpv(task: StageTask, queueFunc, cancelFunc): Children {
         if (type === 'xsd:dateTime' && typeof value === 'number')
             value = new Date(value).toJSON() || value;
         input = m('input', {
+            class    : 'form-control',
             type     : ['xsd:int', 'xsd:unsignedInt'].includes(type) ? 'number' : 'text',
             value    : value,
             oninput  : (e) => {
@@ -107,65 +107,96 @@ function renderStagingDownload(task: StageTask): Children {
                 ).map((f) => f._id),
         ).map((f) => m('option', {disabled: !f, value: f, selected: (task.fileName || '') === f}, f));
 
-    return [
-        'Push ',
-        m(
-            'select',
-            {
-                onchange: (e) => {
-                    const f       = e.target.value;
-                    task.fileName = f;
-                    task.fileType = '';
-                    for (const file of files.value)
-                        if (file._id === f) task.fileType = file['metadata.fileType'];
-                },
-                disabled: files.fulfilling,
-                style   : 'width: 350px',
-            },
-            filesList,
-        ),
-        ' as ',
-        m(
-            'select',
-            {
-                onchange: (e) => {
-                    task.fileType = e.target.value;
-                },
-            },
-            typesList,
-        ),
-    ];
+    // return [
+    //     // 'Push ',
+    //     m('div.col-md-4',
+    //         m('select', {
+    //             onchange: (e) => {
+    //                 const f       = e.target.value;
+    //                 task.fileName = f;
+    //                 task.fileType = '';
+    //                 for (const file of files.value)
+    //                     if (file._id === f) task.fileType = file['metadata.fileType'];
+    //             },
+    //             disabled: files.fulfilling,
+    //             // style   : 'width: 350px',
+    //             class: 'form-select',
+    //         }, filesList),
+    //     ),
+    //     // ' as ',
+    //     m('div.col-md-4',
+    //         m('select', {
+    //             class   : 'form-select',
+    //             onchange: (e) => {
+    //                 task.fileType = e.target.value;
+    //             },
+    //         }, typesList),
+    //     ),
+    // ];
+
+    return m(
+        'div.row.g-2',
+        [
+            m(
+                'div.col-md-6',
+                m('label.form-label', 'Push'),
+                m('select', {
+                    onchange: (e) => {
+                        const f       = e.target.value;
+                        task.fileName = f;
+                        task.fileType = '';
+                        for (const file of files.value)
+                            if (file._id === f) task.fileType = file['metadata.fileType'];
+                    },
+                    disabled: files.fulfilling,
+                    class   : 'form-select',
+                }, filesList),
+            ),
+            m(
+                'div.col-md-6',
+                m('label.form-label', 'as'),
+                m('select', {
+                    class   : 'form-select',
+                    onchange: (e) => {
+                        task.fileType = e.target.value;
+                    },
+                }, typesList),
+            ),
+        ],
+    );
 }
 
-function renderStaging(staging: Set<StageTask>): Child[] {
+function renderStaging(stagingItems: Set<StageTask>): Child[] {
     const elements: Child[] = [];
 
-    for (const s of staging) {
+    for (const item of stagingItems) {
         const queueFunc  = (): void => {
-            staging.delete(s);
-            for (const d of s.devices) {
-                const t = Object.assign({device: d}, s);
+            stagingItems.delete(item);
+            for (const d of item.devices) {
+                const t = Object.assign({device: d}, item);
                 delete t.devices;
                 queueTask(t);
             }
         };
         const cancelFunc = (): void => {
-            staging.delete(s);
+            stagingItems.delete(item);
         };
 
         let elms;
-        if (s.name === 'setParameterValues')
-            elms = renderStagingSpv(s, queueFunc, cancelFunc);
-        else if (s.name === 'download') elms = renderStagingDownload(s);
+        if (item.name === 'setParameterValues')
+            elms = renderStagingSpv(item, queueFunc, cancelFunc);
+
+        if (item.name === 'download')
+            elms = renderStagingDownload(item);
 
         const queue  = m(
-            'button.primary',
-            {title: 'Queue task', onclick: queueFunc, disabled: invalid.has(s)},
+            'button.btn.btn-sm.btn-outline-success',
+            {title: 'Queue Task', onclick: queueFunc, disabled: invalid.has(item)},
             'Queue',
         );
         const cancel = m(
-            'button',
-            {title: 'Cancel edit', onclick: cancelFunc},
+            'button.btn.btn-sm.btn-outline-danger',
+            {title: 'Cancel Edit', onclick: cancelFunc},
             'Cancel',
         );
 
@@ -174,12 +205,12 @@ function renderStaging(staging: Set<StageTask>): Child[] {
     return elements;
 }
 
-function renderQueue(queue: Set<QueueTask>): Child[] {
+function renderQueue(queueItems: Set<QueueTask>): Child[] {
     const details: Child[]                       = [];
     const devices: { [deviceId: string]: any[] } = {};
-    for (const t of queue) {
-        devices[t.device] = devices[t.device] || [];
-        devices[t.device].push(t);
+    for (const item of queueItems) {
+        devices[item.device] = devices[item.device] || [];
+        devices[item.device].push(item);
     }
 
     for (const [k, v] of Object.entries(devices)) {
@@ -190,28 +221,26 @@ function renderQueue(queue: Set<QueueTask>): Child[] {
             if (t.status === 'fault' || t.status === 'stale') {
                 actions.push(
                     m(
-                        'button',
+                        'button.btn.btn-sm.btn-outline-primary',
                         {
-                            title  : 'Retry this task',
+                            title  : 'Retry Task',
                             onclick: () => {
                                 queueTask(t);
                             },
-                        },
-                        getIcon('retry'),
+                        }, m('i.bi.bi-arrow-clockwise'),
                     ),
                 );
             }
 
             actions.push(
                 m(
-                    'button',
+                    'button.btn.btn-sm.btn-outline-danger',
                     {
-                        title  : 'Remove this task',
+                        title  : 'Remove Task',
                         onclick: () => {
                             deleteTask(t);
                         },
-                    },
-                    getIcon('remove'),
+                    }, m('i.bi.bi-trash'),
                 ),
             );
 
@@ -221,11 +250,7 @@ function renderQueue(queue: Set<QueueTask>): Child[] {
                         `div.${t.status}`,
                         m(
                             'span',
-                            'Set ',
-                            mparam(t.parameterValues[0][0]),
-                            ' to \'',
-                            mval(t.parameterValues[0][1]),
-                            '\'',
+                            ['Set ', mparam(t.parameterValues[0][0]), ' to \'', mval(t.parameterValues[0][1]), '\''],
                         ),
                         m('.actions', actions),
                     ),
@@ -239,10 +264,10 @@ function renderQueue(queue: Set<QueueTask>): Child[] {
                     ),
                 );
             } else if (t.name === 'reboot') {
-                details.push(m(`div.${t.status}`, 'Reboot', m('.actions', actions)));
+                details.push(m(`div.${t.status}`, [m('span', 'Reboot'), m('.actions', actions)]));
             } else if (t.name === 'factoryReset') {
                 details.push(
-                    m(`div.${t.status}`, 'Factory reset', m('.actions', actions)),
+                    m(`div.${t.status}`, [m('span', 'Factory Reset'), m('.actions', actions)]),
                 );
             } else if (t.name === 'addObject') {
                 details.push(
@@ -272,7 +297,7 @@ function renderQueue(queue: Set<QueueTask>): Child[] {
                 details.push(
                     m(
                         `div.${t.status}`,
-                        `Push file: ${t.fileName} (${t.fileType})`,
+                        m('span', `Push file: ${t.fileName} (${t.fileType})`),
                         m('.actions', actions),
                     ),
                 );
@@ -296,14 +321,14 @@ const alert = {
     'dark'     : 'alert-dark',
 };
 
-function renderNotifications(notifs): Child[] {
+function renderNotifications(notificationItems): Child[] {
     const notificationElements: Child[] = [];
 
-    for (const n of notifs) {
+    for (const item of notificationItems) {
         let buttons;
-        if (n.actions) {
+        if (item.actions) {
             const btns = Object
-                .entries(n.actions)
+                .entries(item.actions)
                 .map(([label, onclick]) => m('button.btn.btn-sm.btn-outline-success', {onclick: onclick}, label));
             if (btns.length) buttons = m('div.float-end', btns);
         }
@@ -312,8 +337,8 @@ function renderNotifications(notifs): Child[] {
             m(
                 'div.alert',
                 {
-                    class         : alert[n.type] || alert['primary'],
-                    key           : n.timestamp,
+                    class         : alert[item.type] || alert['primary'],
+                    key           : item.timestamp,
                     onbeforeremove: () => {
                         return new Promise<void>((resolve) => {
                             setTimeout(() => {
@@ -322,7 +347,7 @@ function renderNotifications(notifs): Child[] {
                         });
                     },
                 },
-                [buttons, n.message],
+                [buttons, item.message],
             ),
         );
     }
@@ -332,41 +357,40 @@ function renderNotifications(notifs): Child[] {
 const component: ClosureComponent = (): Component => {
     return {
         view: (vnode) => {
-            const queue   = getQueue();
-            const staging = getStaging();
-            const notifs  = notifications.getNotifications();
+            const queueItems        = getQueue();
+            const stagingItems      = getStaging();
+            const notificationItems = notifications.getNotifications();
 
             let drawerElement, statusElement;
-            const notificationElements = renderNotifications(notifs);
-            const stagingElements      = renderStaging(staging);
-            const queueElements        = renderQueue(queue);
+            const notificationElements = renderNotifications(notificationItems);
+            const queueElements        = renderQueue(queueItems);
+            const stagingElements      = renderStaging(stagingItems);
 
             function resizeDrawer(): void {
                 let height = statusElement.dom.offsetTop + statusElement.dom.offsetHeight;
+                for (const c of drawerElement.children) {
+                    height = Math.max(height, c.dom.offsetTop + c.dom.offsetHeight);
+                }
                 if (stagingElements.length) {
                     for (const s of stagingElements as VnodeDOM[]) {
                         height = Math.max(
-                            height,
-                            (s.dom as HTMLDivElement).offsetTop + (s.dom as HTMLDivElement).offsetHeight,
+                            height, (s.dom as HTMLDivElement).offsetTop + (s.dom as HTMLDivElement).offsetHeight,
                         );
                     }
-                } else if (vnode.state['mouseIn']) {
-                    for (const c of drawerElement.children)
-                        height = Math.max(height, c.dom.offsetTop + c.dom.offsetHeight);
                 }
                 drawerElement.dom.style.height = height + 'px';
             }
 
             if (stagingElements.length + queueElements.length) {
                 const statusCount = {queued: 0, pending: 0, fault: 0, stale: 0};
-                for (const t of queue) statusCount[t['status']] += 1;
+                for (const t of queueItems) statusCount[t['status']] += 1;
 
                 const actions = m(
                     '.actions',
                     m(
-                        'button.primary',
+                        'button.btn.btn-sm.btn-outline-success',
                         {
-                            title   : 'Commit queued tasks',
+                            title   : 'Commit Queued Tasks',
                             disabled: !statusCount.queued,
                             onclick : () => {
                                 const tasks = Array.from(getQueue()).filter(
@@ -394,7 +418,6 @@ const component: ClosureComponent = (): Component => {
                                                 return;
                                             }
                                         }
-
                                         notifications.push('success', `${deviceId}: Task(s) committed`);
                                     },
                                 )
@@ -409,12 +432,8 @@ const component: ClosureComponent = (): Component => {
                         'Commit',
                     ),
                     m(
-                        'button',
-                        {
-                            title   : 'Clear tasks',
-                            onclick : clear,
-                            disabled: !queueElements.length,
-                        },
+                        'button.btn.btn-sm.btn-outline-danger',
+                        {title: 'Clear Tasks', onclick: clear, disabled: !queueElements.length},
                         'Clear',
                     ),
                 );
@@ -429,8 +448,9 @@ const component: ClosureComponent = (): Component => {
                 );
 
                 drawerElement = m(
-                    '.drawer',
+                    'div',
                     {
+                        class         : 'drawer alert ' + alert['light'],
                         key           : 'drawer',
                         style         : 'opacity: 0;height: 0;',
                         oncreate      : (vnode2) => {
@@ -464,11 +484,11 @@ const component: ClosureComponent = (): Component => {
                 );
             }
 
-            return m(
-                'div.drawer-wrapper',
-                drawerElement,
-                notificationElements,
-            );
+            const elements = [];
+            if (drawerElement !== undefined)
+                notificationElements.push(drawerElement);
+
+            return m('div.drawer-wrapper', notificationElements);
         },
     };
 };

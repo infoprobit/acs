@@ -38,9 +38,7 @@ const unpackSmartQuery = memoize((query) => {
     });
 });
 
-export function init(
-    args: Record<string, unknown>,
-): Promise<Record<string, unknown>> {
+export function init(args: Record<string, unknown>): Promise<Record<string, unknown>> {
     return new Promise((resolve, reject) => {
         if (!window.authorizer.hasAccess('devices', 2))
             return void reject(new Error('You are not authorized to view this page'));
@@ -218,8 +216,7 @@ export const component: ClosureComponent = (): Component => {
             const attributes = vnode.attrs['indexParameters'];
 
             function showMore(): void {
-                vnode.state['showCount'] =
-                    (vnode.state['showCount'] || PAGE_SIZE) + PAGE_SIZE;
+                vnode.state['showCount'] = (vnode.state['showCount'] || PAGE_SIZE) + PAGE_SIZE;
                 m.redraw();
             }
 
@@ -229,10 +226,7 @@ export const component: ClosureComponent = (): Component => {
                 m.route.set('/devices', ops);
             }
 
-            const sort = vnode.attrs['sort']
-                ? memoizedJsonParse(vnode.attrs['sort'])
-                : {};
-
+            const sort           = vnode.attrs['sort'] ? memoizedJsonParse(vnode.attrs['sort']) : {};
             const sortAttributes = {};
             for (let i = 0; i < attributes.length; i++) {
                 const attr = attributes[i];
@@ -254,19 +248,15 @@ export const component: ClosureComponent = (): Component => {
                 m.route.set('/devices', ops);
             }
 
-            let filter = vnode.attrs['filter']
-                ? memoizedParse(vnode.attrs['filter'])
-                : true;
+            let filter = vnode.attrs['filter'] ? memoizedParse(vnode.attrs['filter']) : true;
             filter     = unpackSmartQuery(filter);
 
-            const devs  = store.fetch('devices', filter, {
+            const devs          = store.fetch('devices', filter, {
                 limit: vnode.state['showCount'] || PAGE_SIZE,
                 sort : sort,
             });
-            const count = store.count('devices', filter);
-
-            const downloadUrl = getDownloadUrl(filter, attributes);
-
+            const count         = store.count('devices', filter);
+            const downloadUrl   = getDownloadUrl(filter, attributes);
             const valueCallback = (attr, device): Children => {
                 return m.context(
                     {device: device, parameter: attr.parameter},
@@ -284,7 +274,7 @@ export const component: ClosureComponent = (): Component => {
             attrs['onSortChange']          = onSortChange;
             attrs['downloadUrl']           = downloadUrl;
             attrs['valueCallback']         = valueCallback;
-            attrs['recordActionsCallback'] = (device): Children => {
+            attrs['recordActionsCallback'] = (device: any): Children => {
                 return m(
                     'a.btn.btn-sm.btn-outline-secondary',
                     {href: `#!/devices/${encodeURIComponent(device['DeviceID.ID'].value[0])}`},
