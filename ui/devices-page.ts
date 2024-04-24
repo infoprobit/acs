@@ -58,7 +58,7 @@ function renderActions(selected: Set<string>): Children {
 
     buttons.push(
         m(
-            'button..button.btn.btn-outline-primary',
+            'button.btn.btn-outline-primary',
             {
                 title   : 'Reboot selected devices',
                 disabled: !selected.size,
@@ -76,7 +76,7 @@ function renderActions(selected: Set<string>): Children {
 
     buttons.push(
         m(
-            'button.button.btn.btn-outline-danger',
+            'button.btn.btn-outline-danger',
             {
                 title   : 'Factory reset selected devices',
                 disabled: !selected.size,
@@ -99,10 +99,7 @@ function renderActions(selected: Set<string>): Children {
                 title   : 'Push a firmware or a config file',
                 disabled: !selected.size,
                 onclick : () => {
-                    stageDownload({
-                                      name   : 'download',
-                                      devices: [...selected],
-                                  });
+                    stageDownload({name: 'download', devices: [...selected]});
                 },
             },
             [m('i.bi.bi-file-earmark-arrow-up'), m.trust('&nbsp;'), 'Push File'],

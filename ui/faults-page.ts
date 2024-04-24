@@ -43,9 +43,7 @@ const unpackSmartQuery = memoize((query) => {
     });
 });
 
-export function init(
-    args: Record<string, unknown>,
-): Promise<Record<string, unknown>> {
+export function init(args: Record<string, unknown>): Promise<Record<string, unknown>> {
     if (!window.authorizer.hasAccess('faults', 2)) {
         return Promise.reject(
             new Error('You are not authorized to view this page'),

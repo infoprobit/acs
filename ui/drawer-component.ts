@@ -25,6 +25,7 @@ function renderStagingSpv(task: StageTask, queueFunc, cancelFunc): Children {
         input = m(
             'select',
             {
+                class    : 'form-select boolean',
                 value    : task.parameterValues[0][1].toString(),
                 onchange : (e) => {
                     e.redraw                   = false;
@@ -106,33 +107,6 @@ function renderStagingDownload(task: StageTask): Children {
                             (!f['metadata.productClass'] || f['metadata.productClass'] === productClass),
                 ).map((f) => f._id),
         ).map((f) => m('option', {disabled: !f, value: f, selected: (task.fileName || '') === f}, f));
-
-    // return [
-    //     // 'Push ',
-    //     m('div.col-md-4',
-    //         m('select', {
-    //             onchange: (e) => {
-    //                 const f       = e.target.value;
-    //                 task.fileName = f;
-    //                 task.fileType = '';
-    //                 for (const file of files.value)
-    //                     if (file._id === f) task.fileType = file['metadata.fileType'];
-    //             },
-    //             disabled: files.fulfilling,
-    //             // style   : 'width: 350px',
-    //             class: 'form-select',
-    //         }, filesList),
-    //     ),
-    //     // ' as ',
-    //     m('div.col-md-4',
-    //         m('select', {
-    //             class   : 'form-select',
-    //             onchange: (e) => {
-    //                 task.fileType = e.target.value;
-    //             },
-    //         }, typesList),
-    //     ),
-    // ];
 
     return m(
         'div.row.g-2',
@@ -221,7 +195,7 @@ function renderQueue(queueItems: Set<QueueTask>): Child[] {
             if (t.status === 'fault' || t.status === 'stale') {
                 actions.push(
                     m(
-                        'button.btn.btn-sm.btn-outline-primary',
+                        'button.btn.btn-sm.btn-outline-success',
                         {
                             title  : 'Retry Task',
                             onclick: () => {
@@ -289,7 +263,7 @@ function renderQueue(queueItems: Set<QueueTask>): Child[] {
                 details.push(
                     m(
                         `div.${t.status}`,
-                        `Refresh ${t.parameterNames.length} parameters`,
+                        m('span', `Refresh ${t.parameterNames.length} parameters`),
                         m('.actions', actions),
                     ),
                 );

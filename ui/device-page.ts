@@ -5,9 +5,7 @@ import * as store from './store.ts';
 
 export function init(args: Record<string, unknown>): Promise<Record<string, unknown>> {
     if (!window.authorizer.hasAccess('devices', 2)) {
-        return Promise.reject(
-            new Error('You are not authorized to view this page'),
-        );
+        return Promise.reject(new Error('You are not authorized to view this page'));
     }
 
     return Promise.resolve({deviceId: args.id, deviceFilter: ['=', ['PARAM', 'DeviceID.ID'], args.id]});
@@ -31,7 +29,6 @@ export const component: ClosureComponent = (): Component => {
                                 `No such device ${vnode.attrs['deviceId']}`,
                             ),
                         ])))),
-
                     ];
                 }
 
@@ -47,7 +44,7 @@ export const component: ClosureComponent = (): Component => {
 
             return [
                 m('.pagetitle', m('h1', `Device: ${vnode.attrs['deviceId']}`)),
-                m('.row', m('.col-lg-12', m('.card', m('.card-body', [cmps])))),
+                m('.row', [cmps]),
             ];
         },
     };

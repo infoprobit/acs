@@ -308,7 +308,6 @@ export const component: ClosureComponent = (): Component => {
             };
 
             return [
-
                 m('.pagetitle', m('h1', 'Listing Provisions')),
                 m('.row', m('.col-lg-12', m('.card', m('.card-body', [
                     m('.card-title', m(filterComponent, filterAttrs)),

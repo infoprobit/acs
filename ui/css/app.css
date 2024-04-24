@@ -1129,7 +1129,6 @@ img.logo {
     border-radius: 0;
     box-shadow: none;
     font-size: 14px;
-    border-radius: 0;
 }
 
 .contact .php-email-form input:focus,
@@ -1234,11 +1233,9 @@ img.logo {
 .CodeMirror {
     min-width: 400px;
     display: block;
-    border: 1px solid var(--color1);
-    background-color: var(--color3);
+    padding: 0;
+    border: 1px solid;
     border-radius: 4px;
-    transition: border-color var(--fade),
-    background-color var(--fade);
 
     &.error {
         background-color: #efcbcf;
@@ -1323,6 +1320,11 @@ img.logo {
 
 .modal-body, .modal-footer {
     padding-bottom: 0;
+}
+
+.modal-footer {
+    padding-left: 0;
+    padding-right: 0;
 }
 
 form > .row, form > .row > * {
@@ -1429,6 +1431,13 @@ form > .row, form > .row > * {
                 margin-bottom: 1em;
             }
 
+            & select.boolean {
+                width: 15%;
+                padding: 0.3em;
+                margin-top: 0.3em;
+                margin-bottom: 1em;
+            }
+
             & .actions {
                 text-align: right;
 
@@ -1506,16 +1515,10 @@ form > .row, form > .row > * {
 }
 
 span.long-text {
-    display: inline-block;
     overflow-x: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     max-width: 400px;
-    /*
-    "overflow: hidden" changes the baseline as explained here:
-    https://stackoverflow.com/questions/9273016/why-is-this-inline-block-element-pushed-downward
-    */
-    vertical-align: top;
 }
 
 span.long-text-overflowed {
@@ -1555,11 +1558,10 @@ span.tag {
 .tags {
     & > .tag {
         margin-right: 0.5em;
+        margin-bottom: 0.3em;
     }
 }
 
-.parameter-value {
-    & > span.parameter {
-        cursor: pointer;
-    }
+span.parameter {
+    cursor: pointer;
 }

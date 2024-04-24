@@ -8,6 +8,7 @@ import summonButton from './components/summon-button.ts';
 import deviceFaults from './components/device-faults.ts';
 import allParameters from './components/all-parameters.ts';
 import deviceActions from './components/device-actions.ts';
+import deviceInfo from './components/device-info.ts';
 import tags from './components/tags.ts';
 import ping from './components/ping.ts';
 import deviceLink from './components/device-link.ts';
@@ -24,6 +25,7 @@ const comps = {
     'device-faults'  : deviceFaults,
     'all-parameters' : allParameters,
     'device-actions' : deviceActions,
+    'device-info'    : deviceInfo,
     tags,
     ping,
     'device-link'    : deviceLink,
