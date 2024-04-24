@@ -22,6 +22,7 @@ const component: ClosureComponent = (): Component => {
                 'Detail',
                 'Retries',
                 'Timestamp',
+                '',
             ].map((l) => m('th', l));
             const thead   = m('thead', m('tr', headers));
 

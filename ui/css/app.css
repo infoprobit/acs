@@ -604,9 +604,8 @@ img.logo {
     padding: 20px;
     overflow-y: auto;
     scrollbar-width: thin;
-    scrollbar-color: #aab7cf transparent;
-    box-shadow: 0px 0px 20px rgba(1, 41, 112, 0.1);
-    background-color: #fff;
+    box-shadow: 0 0 20px rgba(1, 41, 112, 0.1);
+    background-color: #002f87;
 }
 
 @media (max-width: 1199px) {
@@ -680,9 +679,7 @@ img.logo {
     align-items: center;
     font-size: 15px;
     font-weight: 600;
-    color: #4154f1;
-    transition: 0.3;
-    background: #f6f9ff;
+    color: white;
     padding: 10px 15px;
     border-radius: 4px;
 }
@@ -690,25 +687,24 @@ img.logo {
 .sidebar-nav .nav-link i {
     font-size: 16px;
     margin-right: 10px;
-    color: #4154f1;
+    color: #80bc00;
 }
 
 .sidebar-nav .nav-link.collapsed {
-    color: #012970;
-    background: #fff;
+    color: white;
 }
 
 .sidebar-nav .nav-link.collapsed i {
-    color: #899bbd;
+    color: white;
 }
 
 .sidebar-nav .nav-link:hover {
-    color: #4154f1;
+    color: grey;
     background: #f6f9ff;
 }
 
 .sidebar-nav .nav-link:hover i {
-    color: #4154f1;
+    color: #80bc00;
 }
 
 .sidebar-nav .nav-link .bi-chevron-down {
@@ -731,8 +727,7 @@ img.logo {
     align-items: center;
     font-size: 14px;
     font-weight: 600;
-    color: #012970;
-    transition: 0.3;
+    color: white;
     padding: 10px 0 10px 40px;
     transition: 0.3s;
 }
@@ -744,13 +739,13 @@ img.logo {
     border-radius: 50%;
 }
 
-.sidebar-nav .nav-content a:hover,
-.sidebar-nav .nav-content a.active {
-    color: #4154f1;
+.sidebar-nav .nav-content a:hover {
+    color: grey;
 }
 
-.sidebar-nav .nav-content a.active i {
-    background-color: #4154f1;
+.sidebar-nav .nav-content .nav-link:hover i,
+.sidebar-nav .nav-content .nav-link.active i {
+    background-color: #80bc00;
 }
 
 /*--------------------------------------------------------------
@@ -1230,6 +1225,11 @@ img.logo {
 /*--------------------------------------------------------------
 # Project
 --------------------------------------------------------------*/
+
+.table-row-links {
+    min-width: 85px;
+}
+
 .CodeMirror {
     min-width: 400px;
     display: block;
@@ -1485,6 +1485,12 @@ form > .row, form > .row > * {
             & > .fault {
                 background-color: hsl(var(--status-red) / 0.9);
                 border-radius: 0.4em;
+                padding: 0.3em;
+                margin-top: 0.3em;
+
+                & > span {
+                    margin-top: 0.3em;
+                }
             }
 
             & .parameter {

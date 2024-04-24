@@ -3,7 +3,9 @@ import m, { ClosureComponent, Component } from 'mithril';
 const component: ClosureComponent = (): Component => {
     return {
         view: (vnode) => {
-            const active = {[vnode.attrs['page']]: 'active'};
+            const active = (page: string) => {
+                return vnode.attrs['page'] === page ? ' active' : '';
+            };
             const items  = [];
 
             if (window.authorizer.hasAccess('presets', 1)) {
@@ -12,7 +14,7 @@ const component: ClosureComponent = (): Component => {
                         'li',
                         m(
                             'a',
-                            {href: '#!/admin/presets', class: active['presets']},
+                            {href: '#!/admin/presets', class: 'nav-link' + active('presets')},
                             [m('i.bi.bi-circle'), m('span', 'Presets')],
                         ),
                     ),
@@ -25,7 +27,7 @@ const component: ClosureComponent = (): Component => {
                         'li',
                         m(
                             'a',
-                            {href: '#!/admin/provisions', class: active['provisions']},
+                            {href: '#!/admin/provisions', class: 'nav-link' + active('provisions')},
                             [m('i.bi.bi-circle'), m('span', 'Provisions')],
                         ),
                     ),
@@ -38,7 +40,7 @@ const component: ClosureComponent = (): Component => {
                         'li',
                         m(
                             'a',
-                            {href: '#!/admin/virtualParameters', class: active['virtualParameters']},
+                            {href: '#!/admin/virtualParameters', class: 'nav-link' + active('virtualParameters')},
                             [m('i.bi.bi-circle'), m('span', 'Virtual Parameters')],
                         ),
                     ),
@@ -51,7 +53,7 @@ const component: ClosureComponent = (): Component => {
                         'li',
                         m(
                             'a',
-                            {href: '#!/admin/files', class: active['files']},
+                            {href: '#!/admin/files', class: 'nav-link' + active('files')},
                             [m('i.bi.bi-circle'), m('span', 'Files')],
                         ),
                     ),
@@ -64,7 +66,7 @@ const component: ClosureComponent = (): Component => {
                         'li',
                         m(
                             'a',
-                            {href: '#!/admin/config', class: active['config']},
+                            {href: '#!/admin/config', class: 'nav-link' + active('config')},
                             [m('i.bi.bi-circle'), m('span', 'Config')],
                         ),
                     ),
@@ -77,7 +79,7 @@ const component: ClosureComponent = (): Component => {
                         'li',
                         m(
                             'a',
-                            {href: '#!/admin/permissions', class: active['permissions']},
+                            {href: '#!/admin/permissions', class: 'nav-link' + active('permissions')},
                             [m('i.bi.bi-circle'), m('span', 'Permissions')],
                         ),
                     ),
@@ -90,7 +92,7 @@ const component: ClosureComponent = (): Component => {
                         'li',
                         m(
                             'a',
-                            {href: '#!/admin/users', class: active['users']},
+                            {href: '#!/admin/users', class: 'nav-link' + active('users')},
                             [m('i.bi.bi-circle'), m('span', 'Users')],
                         ),
                     ),
