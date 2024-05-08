@@ -113,10 +113,8 @@ function checkConnection(): void {
                               // Ignore in case of missing or invalid Date header
                           }
 
-                          const configChanged  =
-                                    xhr.getResponseHeader('x-config-snapshot') !== configSnapshot;
-                          const versionChanged =
-                                    xhr.getResponseHeader('genieacs-version') !== genieacsVersion;
+                          const configChanged  = xhr.getResponseHeader('x-config-snapshot') !== configSnapshot;
+                          const versionChanged = xhr.getResponseHeader('genieacs-version') !== genieacsVersion;
 
                           if (!configNotification !== !configChanged) {
                               if (configNotification) {
@@ -174,10 +172,7 @@ export async function xhrRequest(options: { url: string } & m.RequestOptions<unk
         if (xhr.status !== 304 && Math.floor(xhr.status / 100) !== 2) {
             if (xhr.status === 403) throw new Error('Not authorized');
             const err       = new Error();
-            err['message']  =
-                xhr.status === 0
-                    ? 'Server is unreachable'
-                    : `Unexpected response status code ${xhr.status}`;
+            err['message']  = xhr.status === 0 ? 'Server is unreachable' : `Unexpected response status code ${xhr.status}`;
             err['code']     = xhr.status;
             err['response'] = xhr.responseText;
             throw err;
@@ -325,9 +320,7 @@ export function fulfill(accessTimestamp: number): void {
                                    method    : 'HEAD',
                                    url       :
                                        `api/${resourceType}/?` +
-                                       m.buildQueryString({
-                                                              filter: memoizedStringify(filter),
-                                                          }),
+                                       m.buildQueryString({filter: memoizedStringify(filter)}),
                                    extract   : (xhr) => {
                                        if (xhr.status === 403) throw new Error('Not authorized');
                                        if (!xhr.status) {
@@ -461,27 +454,19 @@ export function fulfill(accessTimestamp: number): void {
                 allPromises2.push(
                     xhrRequest({
                                    method    : 'GET',
-                                   url       :
-                                       `api/${resourceType}/?` +
-                                       m.buildQueryString({
-                                                              filter: memoizedStringify(combinedFilterDiff),
-                                                          }),
+                                   url       : `api/${resourceType}/?` +
+                                       m.buildQueryString({filter: memoizedStringify(combinedFilterDiff)}),
                                    background: false,
                                }).then((res) => {
                         for (const r of res as any[]) {
-                            const id =
-                                      resourceType === 'devices'
-                                          ? r['DeviceID.ID'].value[0]
-                                          : r['_id'];
+                            const id = resourceType === 'devices' ? r['DeviceID.ID'].value[0] : r['_id'];
                             resources[resourceType].objects.set(id, r);
                             deleted.delete(id);
                         }
 
                         for (const d of deleted) {
                             const obj = resources[resourceType].objects.get(d);
-                            if (
-                                evaluate(combinedFilterDiff, obj, fulfillTimestamp + clockSkew)
-                            )
+                            if (evaluate(combinedFilterDiff, obj, fulfillTimestamp + clockSkew))
                                 resources[resourceType].objects.delete(d);
                         }
 
@@ -546,8 +531,7 @@ export function postTasks(deviceId: string, tasks: QueueTask[]): Promise<string>
                               if (xhr.status === 403) throw new Error('Not authorized');
                               if (!xhr.status) throw new Error('Server is unreachable');
                               if (xhr.status !== 200) throw new Error(xhr.response);
-                              const connectionRequestStatus =
-                                        xhr.getResponseHeader('Connection-Request');
+                              const connectionRequestStatus = xhr.getResponseHeader('Connection-Request');
                               const st                      = JSON.parse(xhr.response);
                               for (const [i, t] of st.entries()) {
                                   tasks[i]._id    = t._id;
@@ -559,11 +543,7 @@ export function postTasks(deviceId: string, tasks: QueueTask[]): Promise<string>
 }
 
 export function updateTags(deviceId: string, tags: Record<string, boolean>): Promise<void> {
-    return xhrRequest({
-                          method: 'POST',
-                          url   : `api/devices/${encodeURIComponent(deviceId)}/tags`,
-                          body  : tags,
-                      });
+    return xhrRequest({method: 'POST', url: `api/devices/${encodeURIComponent(deviceId)}/tags`, body: tags});
 }
 
 export function deleteResource(resourceType: string, id: string): Promise<void> {
@@ -573,11 +553,7 @@ export function deleteResource(resourceType: string, id: string): Promise<void> 
 export function putResource(resourceType: string, id: string, object: Record<string, unknown>): Promise<void> {
     for (const k in object) if (object[k] === undefined) object[k] = null;
 
-    return xhrRequest({
-                          method: 'PUT',
-                          url   : `api/${resourceType}/${encodeURIComponent(id)}`,
-                          body  : object,
-                      });
+    return xhrRequest({method: 'PUT', url: `api/${resourceType}/${encodeURIComponent(id)}`, body: object});
 }
 
 export function queryConfig(pattern = '%'): Promise<any[]> {
@@ -637,4 +613,13 @@ export function logOut(): Promise<void> {
 
 export function ping(host: string): Promise<PingResult> {
     return xhrRequest({url: `api/ping/${encodeURIComponent(host)}`, background: true});
+}
+
+export function groupResult(resource: string, groupBy: string, filter: Expression = null): Promise<any> {
+    return xhrRequest({
+                          method    : 'GET',
+                          url       : `api/aggregation/${resource}?` +
+                              m.buildQueryString({filter: memoizedStringify(filter), groupBy: groupBy}),
+                          background: true,
+                      });
 }

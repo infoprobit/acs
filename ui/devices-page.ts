@@ -247,12 +247,11 @@ export const component: ClosureComponent = (): Component => {
 
             let filter = vnode.attrs['filter'] ? memoizedParse(vnode.attrs['filter']) : true;
             filter     = unpackSmartQuery(filter);
-
-            const devs          = store.fetch('devices', filter, {
+            const devs  = store.fetch('devices', filter, {
                 limit: vnode.state['showCount'] || PAGE_SIZE,
                 sort : sort,
             });
-            const count         = store.count('devices', filter);
+            const count = store.count('devices', filter);
             const downloadUrl   = getDownloadUrl(filter, attributes);
             const valueCallback = (attr, device): Children => {
                 return m.context(

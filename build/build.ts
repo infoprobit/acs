@@ -114,6 +114,7 @@ const inlineDepsPlugin = {
             'codemirror',
             'mithril',
             'yaml',
+            'apexcharts',
         ];
         build.onResolve({filter: /^[^.]/}, async (args) => {
             if (deps.some((d) => args.path.startsWith(d))) return undefined;

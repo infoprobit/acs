@@ -263,8 +263,6 @@ export const component: ClosureComponent = (): Component => {
                 );
 
                 const subsData = [
-                    {name: 'Overview', prefix: 'ui.overview.groups.', data: []},
-                    {name: 'Charts', prefix: 'ui.overview.charts.', data: []},
                     {name: 'Filters', prefix: 'ui.filters.', data: []},
                     {name: 'Index Page', prefix: 'ui.index.', data: []},
                     {name: 'Device Page', prefix: 'ui.device.', data: []},

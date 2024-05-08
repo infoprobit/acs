@@ -241,7 +241,7 @@ export async function seed(options: Record<string, boolean>): Promise<void> {
       },
       {
         _id: "ui.overview.charts.online.slices.1_onlineNow.label",
-        value: "'Online now'",
+        value: "'Online Now'",
       },
       {
         _id: "ui.overview.charts.online.slices.2_past24.color",
@@ -254,7 +254,7 @@ export async function seed(options: Record<string, boolean>): Promise<void> {
       },
       {
         _id: "ui.overview.charts.online.slices.2_past24.label",
-        value: "'Past 24 hours'",
+        value: "'Past 24 Hours'",
       },
       {
         _id: "ui.overview.charts.online.slices.3_others.color",
@@ -269,8 +269,6 @@ export async function seed(options: Record<string, boolean>): Promise<void> {
         _id: "ui.overview.charts.online.slices.3_others.label",
         value: "'Others'",
       },
-      { _id: "ui.overview.groups.online.label", value: "''" },
-      { _id: "ui.overview.groups.online.charts.0", value: "'online'" },
     ]);
   }
 

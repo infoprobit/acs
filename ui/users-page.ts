@@ -148,9 +148,7 @@ export const component: ClosureComponent = (): Component => {
                 m.route.set('/admin/users', ops);
             }
 
-            const sort = vnode.attrs['sort']
-                ? memoizedJsonParse(vnode.attrs['sort'])
-                : {};
+            const sort = vnode.attrs['sort'] ? memoizedJsonParse(vnode.attrs['sort']) : {};
 
             const sortAttributes = {};
             for (let i = 0; i < attributes.length; i++) {

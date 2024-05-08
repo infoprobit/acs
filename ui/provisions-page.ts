@@ -101,9 +101,7 @@ const getDownloadUrl = memoize((filter) => {
     return `api/provisions.csv?${m.buildQueryString({filter: stringify(filter), columns: JSON.stringify(cols)})}`;
 });
 
-export function init(
-    args: Record<string, unknown>,
-): Promise<Record<string, unknown>> {
+export function init(args: Record<string, unknown>): Promise<Record<string, unknown>> {
     if (!window.authorizer.hasAccess('provisions', 2)) {
         return Promise.reject(
             new Error('You are not authorized to view this page'),

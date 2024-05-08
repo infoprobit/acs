@@ -1,71 +1,101 @@
-import { ClosureComponent, Component } from "mithril";
-import { m } from "./components.ts";
-import config from "./config.ts";
-import * as store from "./store.ts";
-import pieChartComponent from "./pie-chart-component.ts";
+import m, { ClosureComponent } from 'mithril';
+import * as store from './store.ts';
+import devicesChart from './components/devices-chart.ts';
+import devicesGroup from './components/devices-group.ts';
 
-const GROUPS = config.ui.overview.groups || {};
-const CHARTS = {};
-for (const group of Object.values(GROUPS)) {
-  for (const chartName of Object.values(group["charts"]) as string[])
-    CHARTS[chartName] = config.ui.overview.charts[chartName];
-}
-
-function queryCharts(charts: Record<string, unknown>): Record<string, unknown> {
-  charts = Object.assign({}, charts);
-  for (let [chartName, chart] of Object.entries(charts)) {
-    charts[chartName] = chart = Object.assign({}, chart);
-    chart["slices"] = Object.assign({}, chart["slices"]);
-    for (let [sliceName, slice] of Object.entries(chart["slices"])) {
-      const filter = slice["filter"];
-      chart["slices"][sliceName] = slice = Object.assign({}, slice);
-      slice["count"] = store.count("devices", filter);
+function queryGroup(group: Record<string, unknown>): Record<string, unknown> {
+    group = Object.assign({}, group);
+    for (let [grName, gr] of Object.entries(group)) {
+        group[grName]          = gr = Object.assign({}, gr);
+        group[grName]['label'] = gr['_id'];
+        group[grName]['count'] = store.count('devices', ['AND', ['=', ['PARAM', 'DeviceID.ProductClass'], gr['_id']]]);
     }
-  }
-  return charts;
+    return group;
 }
 
-export function init(): Promise<Record<string, unknown>> {
-  if (!window.authorizer.hasAccess("devices", 1)) {
-    return Promise.reject(
-      new Error("You are not authorized to view this page"),
-    );
-  }
+function queryChart(chart: Record<string, unknown>): Record<string, unknown> {
+    chart = Object.assign({}, chart);
+    for (let [chName, ch] of Object.entries(chart)) {
+        chart[chName]          = ch = Object.assign({}, ch);
+        chart[chName]['label'] = ch['_id'];
 
-  return Promise.resolve({ charts: queryCharts(CHARTS) });
+        chart[chName]['count']            = {};
+        chart[chName]['count']['online']  = store.count('devices', [
+            'AND',
+            ['>', ['PARAM', 'Events.Inform'], (Date.now() - (5 * 60 * 1000))],
+            ['=', ['PARAM', 'DeviceID.ProductClass'], ch['_id']],
+        ]);
+        chart[chName]['count']['offline'] = store.count('devices', [
+            'AND',
+            ['>', ['PARAM', 'Events.Inform'], Date.now() - (5 * 60 * 1000) - (24 * 60 * 60 * 1000)],
+            ['<', ['PARAM', 'Events.Inform'], Date.now() - (5 * 60 * 1000)],
+            ['=', ['PARAM', 'DeviceID.ProductClass'], ch['_id']],
+        ]);
+        chart[chName]['count']['other']   = store.count('devices', [
+            'AND',
+            ['<', ['PARAM', 'Events.Inform'], Date.now() - (5 * 60 * 1000) - (24 * 60 * 60 * 1000)],
+            ['=', ['PARAM', 'DeviceID.ProductClass'], ch['_id']],
+        ]);
+    }
+
+    return chart;
 }
 
-export const component: ClosureComponent = (): Component => {
-  return {
-    view: (vnode) => {
-      document.title = "Overview - ProACS";
-      const children = [];
-      for (const group of Object.values(GROUPS)) {
-        if (group["label"])
-          children.push(
-            m("h1", store.evaluateExpression(group["label"], null)),
-          );
+async function fetchProductClass() {
+    try {
+        return await store.groupResult('devices', '_deviceId._ProductClass');
+    } catch (error) {
+        new Error('Error during get a data: ' + error)
+    }
+}
 
-        const groupChildren = [];
-        for (const chartName of Object.values(group["charts"]) as string[]) {
-          const chart = vnode.attrs["charts"][chartName];
-          const chartChildren = [];
-          if (chart.label)
-            chartChildren.push(
-              m("h2", store.evaluateExpression(chart.label, null)),
-            );
+export async function init(): Promise<Record<string, unknown>> {
+    if (!window.authorizer.hasAccess('devices', 1)) {
+        return Promise.reject(
+            new Error('You are not authorized to view this page'),
+        );
+    }
 
-          const attrs = {};
-          attrs["chart"] = chart;
-          chartChildren.push(m(pieChartComponent, attrs));
+    const chart            = await fetchProductClass();
+    const [devices, group] = await Promise.all([queryChart(chart), queryGroup(chart)]);
 
-          groupChildren.push(m(".overview-chart", chartChildren));
-        }
+    return Promise.resolve({devices: devices, group: group});
+}
 
-        children.push(m(".overview-chart-group", groupChildren));
-      }
+export const component: ClosureComponent = (): { view: (vnode) => any[] } => {
+    return {
+        view: (vnode) => {
+            document.title = 'Overview - ProACS';
+            const children = [];
 
-      return children;
-    },
-  };
+            const group   = {};
+            group['data'] = vnode.attrs['group'];
+
+            children.push(m(devicesGroup, group));
+
+            const devices    = vnode.attrs['devices'];
+            let charts       = {};
+            const categories = [];
+            const series     = [
+                {name: 'Online Now', data: []},
+                {name: 'Past 24 hours', data: []},
+                {name: 'Others', data: []},
+            ];
+
+            for (const ch of Object.values(devices)) {
+                categories.push(ch['label']);
+                series[0].data.push(ch['count']['online']['value'] || 0);
+                series[1].data.push(ch['count']['offline']['value'] || 0);
+                series[2].data.push(ch['count']['other']['value'] || 0);
+            }
+
+            charts['data'] = {
+                categories: categories,
+                series    : series,
+            };
+            children.push(m(devicesChart, charts));
+
+            return children;
+        },
+    };
 };

@@ -6,9 +6,7 @@ import * as overlay from './overlay.ts';
 import changePasswordComponent from './change-password-component.ts';
 import { LOGO_SVG } from '../build/assets.ts';
 
-export function init(
-    args: Record<string, unknown>,
-): Promise<Record<string, unknown>> {
+export function init(args: Record<string, unknown>): Promise<Record<string, unknown>> {
     return Promise.resolve(args);
 }
 
