@@ -8,7 +8,7 @@ import { Expression } from '../lib/types.ts';
 
 const getAutocomplete = memoize((resource) => {
     const labels       = smartQuery.getLabels(resource);
-    const autocomplete = new Autocomplete('autocomplete', (txt, cb) => {
+    return new Autocomplete('autocomplete', (txt, cb) => {
         txt = txt.toLowerCase();
         cb(
             labels
@@ -19,7 +19,6 @@ const getAutocomplete = memoize((resource) => {
                 })),
         );
     });
-    return autocomplete;
 });
 
 function parseFilter(resource, f): Expression {

@@ -62,7 +62,7 @@ const component: ClosureComponent = (): Component => {
             let edit;
             if (device[parameter]?.writable) {
                 edit = m('span.parameter', {
-                             title  : 'Edit parameter value',
+                             title  : 'Edit Parameter Value',
                              onclick: () => {
                                  taskQueue.stageSpv({
                                                         name           : 'setParameterValues',
@@ -88,7 +88,7 @@ const component: ClosureComponent = (): Component => {
                     if (e.target === (el as VnodeDOM).dom) {
                         const now          = Date.now() + store.getClockSkew();
                         const localeString = new Date(timestamp).toLocaleString();
-                        e.target.title     = `${localeString} (${timeAgo(now - timestamp)})`;
+                        e.target.title     = `${localeString} (${timeAgo(now - timestamp)} ago)`;
                     }
                 },
             }, el, edit);

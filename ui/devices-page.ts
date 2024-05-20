@@ -56,152 +56,140 @@ export function init(args: Record<string, unknown>): Promise<Record<string, unkn
 function renderActions(selected: Set<string>): Children {
     const buttons = [];
 
-    buttons.push(
-        m(
-            'button.btn.btn-outline-primary',
-            {
-                title   : 'Reboot selected devices',
-                disabled: !selected.size,
-                onclick : () => {
-                    const tasks = [...selected].map((s) => ({
-                        name  : 'reboot',
-                        device: s,
-                    }));
-                    queueTask(...tasks);
-                },
+    buttons.push(m(
+        'button.btn.btn-outline-primary',
+        {
+            title   : 'Reboot selected devices',
+            disabled: !selected.size,
+            onclick : () => {
+                const tasks = [...selected].map((s) => ({
+                    name  : 'reboot',
+                    device: s,
+                }));
+                queueTask(...tasks);
             },
-            [m('i.bi.bi-bootstrap-reboot'), m.trust('&nbsp;'), 'Reboot'],
-        ),
-    );
+        },
+        [m('i.bi.bi-bootstrap-reboot'), m.trust('&nbsp;'), 'Reboot'],
+    ));
 
-    buttons.push(
-        m(
-            'button.btn.btn-outline-danger',
-            {
-                title   : 'Factory reset selected devices',
-                disabled: !selected.size,
-                onclick : () => {
-                    const tasks = [...selected].map((s) => ({
-                        name  : 'factoryReset',
-                        device: s,
-                    }));
-                    queueTask(...tasks);
-                },
+    buttons.push(m(
+        'button.btn.btn-outline-danger',
+        {
+            title   : 'Factory reset selected devices',
+            disabled: !selected.size,
+            onclick : () => {
+                const tasks = [...selected].map((s) => ({
+                    name  : 'factoryReset',
+                    device: s,
+                }));
+                queueTask(...tasks);
             },
-            [m('i.bi.bi-x-octagon'), m.trust('&nbsp;'), 'Reset'],
-        ),
-    );
+        },
+        [m('i.bi.bi-x-octagon'), m.trust('&nbsp;'), 'Reset'],
+    ));
 
-    buttons.push(
-        m(
-            'button.btn.btn-outline-danger',
-            {
-                title   : 'Push a firmware or a config file',
-                disabled: !selected.size,
-                onclick : () => {
-                    stageDownload({name: 'download', devices: [...selected]});
-                },
+    buttons.push(m(
+        'button.btn.btn-outline-danger',
+        {
+            title   : 'Push a firmware or a config file',
+            disabled: !selected.size,
+            onclick : () => {
+                stageDownload({name: 'download', devices: [...selected]});
             },
-            [m('i.bi.bi-file-earmark-arrow-up'), m.trust('&nbsp;'), 'Push File'],
-        ),
-    );
+        },
+        [m('i.bi.bi-file-earmark-arrow-up'), m.trust('&nbsp;'), 'Push File'],
+    ));
 
-    buttons.push(
-        m(
-            'button.btn.btn-outline-danger',
-            {
-                title   : 'Delete selected devices',
-                disabled: !selected.size,
-                onclick : () => {
-                    const ids = Array.from(selected);
-                    if (!confirm(`Deleting ${ids.length} devices. Are you sure?`)) return;
+    buttons.push(m(
+        'button.btn.btn-outline-danger',
+        {
+            title   : 'Delete selected devices',
+            disabled: !selected.size,
+            onclick : () => {
+                const ids = Array.from(selected);
+                if (!confirm(`Deleting ${ids.length} devices. Are you sure?`)) return;
 
-                    let counter = 1;
-                    for (const id of ids) {
-                        ++counter;
-                        store
-                            .deleteResource('devices', id)
-                            .then(() => {
-                                notifications.push('success', `${id}: Deleted`);
-                                if (--counter === 0) store.setTimestamp(Date.now());
-                            })
-                            .catch((err) => {
-                                notifications.push('error', `${id}: ${err.message}`);
-                                if (--counter === 0) store.setTimestamp(Date.now());
-                            });
-                    }
-                    if (--counter === 0) store.setTimestamp(Date.now());
-                },
+                let counter = 1;
+                for (const id of ids) {
+                    ++counter;
+                    store
+                        .deleteResource('devices', id)
+                        .then(() => {
+                            notifications.push('success', `${id}: Deleted`);
+                            if (--counter === 0) store.setTimestamp(Date.now());
+                        })
+                        .catch((err) => {
+                            notifications.push('error', `${id}: ${err.message}`);
+                            if (--counter === 0) store.setTimestamp(Date.now());
+                        });
+                }
+                if (--counter === 0) store.setTimestamp(Date.now());
             },
-            [m('i.bi.bi-trash'), m.trust('&nbsp;'), 'Delete'],
-        ),
-    );
+        },
+        [m('i.bi.bi-trash'), m.trust('&nbsp;'), 'Delete'],
+    ));
 
-    buttons.push(
-        m(
-            'button.btn.btn-outline-success',
-            {
-                title   : 'Tag selected devices',
-                disabled: !selected.size,
-                onclick : () => {
-                    const ids = Array.from(selected);
-                    const tag = prompt(`Enter tag to assign to ${ids.length} devices:`);
-                    if (!tag) return;
+    buttons.push(m(
+        'button.btn.btn-outline-success',
+        {
+            title   : 'Tag selected devices',
+            disabled: !selected.size,
+            onclick : () => {
+                const ids = Array.from(selected);
+                const tag = prompt(`Enter tag to assign to ${ids.length} devices:`);
+                if (!tag) return;
 
-                    let counter = 1;
-                    for (const id of ids) {
-                        ++counter;
-                        store
-                            .updateTags(id, {[tag]: true})
-                            .then(() => {
-                                notifications.push('success', `${id}: Tags updated`);
-                                if (--counter === 0) store.setTimestamp(Date.now());
-                            })
-                            .catch((err) => {
-                                notifications.push('error', `${id}: ${err.message}`);
-                                if (--counter === 0) store.setTimestamp(Date.now());
-                            });
-                    }
-                    if (--counter === 0) store.setTimestamp(Date.now());
-                },
+                let counter = 1;
+                for (const id of ids) {
+                    ++counter;
+                    store
+                        .updateTags(id, {[tag]: true})
+                        .then(() => {
+                            notifications.push('success', `${id}: Tags updated`);
+                            if (--counter === 0) store.setTimestamp(Date.now());
+                        })
+                        .catch((err) => {
+                            notifications.push('error', `${id}: ${err.message}`);
+                            if (--counter === 0) store.setTimestamp(Date.now());
+                        });
+                }
+                if (--counter === 0) store.setTimestamp(Date.now());
             },
-            [m('i.bi.bi-bookmark-plus'), m.trust('&nbsp;'), 'Tag'],
-        ),
-    );
+        },
+        [m('i.bi.bi-bookmark-plus'), m.trust('&nbsp;'), 'Tag'],
+    ));
 
-    buttons.push(
-        m(
-            'button.btn.btn-outline-warning',
-            {
-                title   : 'Untag selected devices',
-                disabled: !selected.size,
-                onclick : () => {
-                    const ids = Array.from(selected);
-                    const tag = prompt(
-                        `Enter tag to unassign from ${ids.length} devices:`,
-                    );
-                    if (!tag) return;
+    buttons.push(m(
+        'button.btn.btn-outline-warning',
+        {
+            title   : 'Untag selected devices',
+            disabled: !selected.size,
+            onclick : () => {
+                const ids = Array.from(selected);
+                const tag = prompt(
+                    `Enter tag to unassign from ${ids.length} devices:`,
+                );
+                if (!tag) return;
 
-                    let counter = 1;
-                    for (const id of ids) {
-                        ++counter;
-                        store
-                            .updateTags(id, {[tag]: false})
-                            .then(() => {
-                                notifications.push('success', `${id}: Tags updated`);
-                                if (--counter === 0) store.setTimestamp(Date.now());
-                            })
-                            .catch((err) => {
-                                notifications.push('error', `${id}: ${err.message}`);
-                                if (--counter === 0) store.setTimestamp(Date.now());
-                            });
-                    }
-                    if (--counter === 0) store.setTimestamp(Date.now());
-                },
+                let counter = 1;
+                for (const id of ids) {
+                    ++counter;
+                    store
+                        .updateTags(id, {[tag]: false})
+                        .then(() => {
+                            notifications.push('success', `${id}: Tags updated`);
+                            if (--counter === 0) store.setTimestamp(Date.now());
+                        })
+                        .catch((err) => {
+                            notifications.push('error', `${id}: ${err.message}`);
+                            if (--counter === 0) store.setTimestamp(Date.now());
+                        });
+                }
+                if (--counter === 0) store.setTimestamp(Date.now());
             },
-            [m('i.bi.bi-bookmark-x'), m.trust('&nbsp;'), 'UnTag'],
-        ),
-    );
+        },
+        [m('i.bi.bi-bookmark-x'), m.trust('&nbsp;'), 'UnTag'],
+    ));
 
     return buttons;
 }
@@ -245,13 +233,13 @@ export const component: ClosureComponent = (): Component => {
                 m.route.set('/devices', ops);
             }
 
-            let filter = vnode.attrs['filter'] ? memoizedParse(vnode.attrs['filter']) : true;
-            filter     = unpackSmartQuery(filter);
-            const devs  = store.fetch('devices', filter, {
+            let filter          = vnode.attrs['filter'] ? memoizedParse(vnode.attrs['filter']) : true;
+            filter              = unpackSmartQuery(filter);
+            const devs          = store.fetch('devices', filter, {
                 limit: vnode.state['showCount'] || PAGE_SIZE,
                 sort : sort,
             });
-            const count = store.count('devices', filter);
+            const count         = store.count('devices', filter);
             const downloadUrl   = getDownloadUrl(filter, attributes);
             const valueCallback = (attr, device): Children => {
                 return m.context(
