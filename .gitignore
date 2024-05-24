@@ -20,4 +20,5 @@ dist
 docs/_build
 ext
 !ext/.gitkeep
+genieacs.env
 ###< project directories and files ###

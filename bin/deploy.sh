@@ -15,10 +15,6 @@ git pull origin master
 npm install
 npm run build
 
-cp /opt/acs/genieacs.env.template /opt/acs/dist/genieacs.env
-node -e "console.log(\"GENIEACS_UI_JWT_SECRET=\" + require('crypto').randomBytes(128).toString('hex'))" >> /opt/acs/dist/genieacs.env
-chmod 600 /opt/acs/dist/genieacs.env
-
 echo "Start application services: "
 sudo systemctl start genieacs-cwmp
 sudo systemctl start genieacs-nbi

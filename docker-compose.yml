@@ -6,7 +6,7 @@ services:
             context: .
             target: nodejs
         environment:
-            GENIEACS_MONGODB_CONNECTION_URL: "mongodb://db/genieacs"
+            GENIEACS_MONGODB_CONNECTION_URL: "mongodb://root:root@mongo:27017/genieacs?authSource=admin"
             GENIEACS_CWMP_WORKER_PROCESSES: 1
             GENIEACS_FS_WORKER_PROCESSES: 1
             GENIEACS_NBI_WORKER_PROCESSES: 1
@@ -16,13 +16,18 @@ services:
         ports:
             - "7547:7547"
             - "7557:7557"
+            - "7567:7567"
             - "3000:3000"
         networks:
             - internal
         depends_on:
-            - db
-    db:
+            - mongo
+
+    mongo:
         image: mongo:4.4
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: "root"
+            MONGO_INITDB_ROOT_PASSWORD: "root"
         ports:
             - "27017:27017"
         volumes:
@@ -31,6 +36,7 @@ services:
             driver: "none"
         networks:
             - internal
+
 networks:
     internal:
         driver: bridge
