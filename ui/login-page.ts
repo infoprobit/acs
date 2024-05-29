@@ -4,7 +4,7 @@ import * as store from './store.ts';
 import * as notifications from './notifications.ts';
 import * as overlay from './overlay.ts';
 import changePasswordComponent from './change-password-component.ts';
-import { LOGO_SVG } from '../build/assets.ts';
+import { LOGO_PNG } from '../build/assets.ts';
 
 export function init(args: Record<string, unknown>): Promise<Record<string, unknown>> {
     return Promise.resolve(args);
@@ -19,7 +19,7 @@ export const component: ClosureComponent = (): Component => {
             return [
                 m(
                     'div.d-flex.justify-content-center.py-4',
-                    m('img', {class: 'logo d-flex align-items-center w-auto', src: LOGO_SVG}),
+                    m('img', {class: 'logo d-flex align-items-center w-auto', src: LOGO_PNG}),
                 ),
                 m(
                     'div.card.mb-3',
