@@ -1,9 +1,7 @@
-import { Children, ClosureComponent, Component } from 'mithril';
+import { ClosureComponent, Component } from 'mithril';
 import { m } from './components.ts';
 import * as store from './store.ts';
 import * as notifications from './notifications.ts';
-import * as overlay from './overlay.ts';
-import changePasswordComponent from './change-password-component.ts';
 import { LOGO_PNG } from '../build/assets.ts';
 
 export function init(args: Record<string, unknown>): Promise<Record<string, unknown>> {
@@ -67,53 +65,22 @@ export const component: ClosureComponent = (): Component => {
                                 }),
                                 m('div.invalid-feedback', 'Please enter your password!'),
                             ),
-                            m(
-                                'div.col-12',
-                                m(
-                                    'button.btn.btn-primary.w-100',
-                                    {
-                                        type   : 'submit',
-                                        onclick: (e) => {
-                                            e.target.disabled = true;
-                                            store
-                                                .logIn(vnode.state['username'], vnode.state['password'])
-                                                .then(() => {
-                                                    location.reload();
-                                                })
-                                                .catch((err) => {
-                                                    notifications.push('error', err.response || err.message);
-                                                    e.target.disabled = false;
-                                                });
-                                            return false;
-                                        },
-                                    },
-                                    'Login',
-                                ),
-                            ),
-                            m(
-                                'div.col-12.d-flex.justify-content-center',
-                                m(
-                                    'p.small.mb-0',
-                                    m(
-                                        'a',
-                                        {
-                                            onclick: () => {
-                                                const cb = (): Children => {
-                                                    const attrs = {
-                                                        onPasswordChange: () => {
-                                                            overlay.close(cb);
-                                                            m.redraw();
-                                                        },
-                                                    };
-                                                    return m(changePasswordComponent, attrs);
-                                                };
-                                                overlay.open(cb);
-                                            },
-                                        },
-                                        'Change Password',
-                                    ),
-                                ),
-                            ),
+                            m('div.col-12', m('button.btn.btn-primary.w-100', {
+                                type   : 'submit',
+                                onclick: (e) => {
+                                    e.target.disabled = true;
+                                    store
+                                        .logIn(vnode.state['username'], vnode.state['password'])
+                                        .then(() => {
+                                            location.reload();
+                                        })
+                                        .catch((err) => {
+                                            notifications.push('error', err.response || err.message);
+                                            e.target.disabled = false;
+                                        });
+                                    return false;
+                                },
+                            }, 'Login')),
                         ),
                     ),
                 ),
