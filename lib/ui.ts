@@ -113,7 +113,7 @@ router.post("/login", async (ctx) => {
   const password = ctx.request.body.password;
 
   const log = {
-    message: "Log in",
+    message: "LogIn",
     context: ctx,
     username: username,
     method: null,
@@ -145,7 +145,7 @@ router.post("/logout", async (ctx) => {
   ctx.body = "";
 
   logger.accessInfo({
-    message: "Log out",
+    message: "LogOut",
     context: ctx,
   });
 });

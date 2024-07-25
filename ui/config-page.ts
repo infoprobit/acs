@@ -86,9 +86,7 @@ function escapeRegExp(str): string {
 
 export function init(): Promise<Record<string, unknown>> {
     if (!window.authorizer.hasAccess('config', 2)) {
-        return Promise.reject(
-            new Error('You are not authorized to view this page'),
-        );
+        return Promise.reject(new Error('You are not authorized to view this page!'));
     }
     return new Promise((resolve, reject) => {
         Promise.all([loadCodeMirror(), loadYaml()])

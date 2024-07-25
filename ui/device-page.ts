@@ -5,7 +5,7 @@ import * as store from './store.ts';
 
 export function init(args: Record<string, unknown>): Promise<Record<string, unknown>> {
     if (!window.authorizer.hasAccess('devices', 2)) {
-        return Promise.reject(new Error('You are not authorized to view this page'));
+        return Promise.reject(new Error('You are not authorized to view this page!'));
     }
 
     return Promise.resolve({deviceId: args.id, deviceFilter: ['=', ['PARAM', 'DeviceID.ID'], args.id]});

@@ -1,13 +1,7 @@
 import { getRevision, getUiConfig, getUsers } from "./ui/local-cache.ts";
 import { generateSalt, hashPassword } from "./auth.ts";
 import { collections } from "./db/db.ts";
-import {
-  putConfig,
-  putPermission,
-  putPreset,
-  putProvision,
-  putUser,
-} from "./ui/db.ts";
+import { putConfig, putPermission, putPreset, putProvision, putUser } from "./ui/db.ts";
 import { del } from "./cache.ts";
 
 interface Status {
@@ -16,7 +10,6 @@ interface Status {
   filters: boolean;
   device: boolean;
   index: boolean;
-  overview: boolean;
 }
 
 const BOOTSTRAP_SCRIPT = `
@@ -87,7 +80,6 @@ export async function getStatus(): Promise<Status> {
     filters: !Object.keys(ui["filters"]).length,
     device: !Object.keys(ui["device"]).length,
     index: !Object.keys(ui["index"]).length,
-    overview: !Object.keys(ui["overview"]).length,
   };
 }
 
@@ -97,44 +89,38 @@ export async function seed(options: Record<string, boolean>): Promise<void> {
 
   if (options.users) {
     resources["permissions"] = [
-      { role: "admin", resource: "devices", access: 3, validate: "true" },
-      { role: "admin", resource: "faults", access: 3, validate: "true" },
-      { role: "admin", resource: "files", access: 3, validate: "true" },
-      { role: "admin", resource: "presets", access: 3, validate: "true" },
-      { role: "admin", resource: "provisions", access: 3, validate: "true" },
-      { role: "admin", resource: "config", access: 3, validate: "true" },
-      { role: "admin", resource: "permissions", access: 3, validate: "true" },
-      { role: "admin", resource: "users", access: 3, validate: "true" },
-      {
-        role: "admin",
-        resource: "virtualParameters",
-        access: 3,
-        validate: "true",
-      },
+      {role: "admin", resource: "devices", access: 3, validate: "true"},
+      {role: "admin", resource: "faults", access: 3, validate: "true"},
+      {role: "admin", resource: "files", access: 3, validate: "true"},
+      {role: "admin", resource: "presets", access: 3, validate: "true"},
+      {role: "admin", resource: "provisions", access: 3, validate: "true"},
+      {role: "admin", resource: "config", access: 3, validate: "true"},
+      {role: "admin", resource: "permissions", access: 3, validate: "true"},
+      {role: "admin", resource: "users", access: 3, validate: "true"},
+      {role: "admin", resource: "virtualParameters", access: 3, validate: "true"},
     ];
 
     resources["users"] = [
-      { username: "admin", password: "admin", roles: ["admin"] },
+      {username: "admin@probit.com", password: "ProbitACS2024", roles: ["admin"]},
     ];
   }
 
   if (options.filters) {
     resources["config"] = (resources["config"] || []).concat([
-      { _id: "ui.filters.0.label", value: "'Serial number'" },
-      { _id: "ui.filters.0.parameter", value: "DeviceID.SerialNumber" },
-      { _id: "ui.filters.0.type", value: "'string'" },
-      { _id: "ui.filters.1.label", value: "'Product class'" },
-      { _id: "ui.filters.1.parameter", value: "DeviceID.ProductClass" },
-      { _id: "ui.filters.1.type", value: "'string'" },
-      { _id: "ui.filters.2.label", value: "'Tag'" },
-      { _id: "ui.filters.2.type", value: "'tag'" },
+      {_id: "ui.filters.0.label", value: "'Serial number'"},
+      {_id: "ui.filters.0.parameter", value: "DeviceID.SerialNumber"},
+      {_id: "ui.filters.0.type", value: "'string'"},
+      {_id: "ui.filters.1.label", value: "'Product class'"},
+      {_id: "ui.filters.1.parameter", value: "DeviceID.ProductClass"},
+      {_id: "ui.filters.1.type", value: "'string'"},
+      {_id: "ui.filters.2.label", value: "'Tag'"},
+      {_id: "ui.filters.2.type", value: "'tag'"},
     ]);
   }
 
   if (options.device) {
     resources["config"] = (resources["config"] || [])
         .concat([
-
       {_id: "ui.device.0.type", value: "'parameter-list'"},
       {_id: "ui.device.0.parameters.0.type", value: "'container'"},
       {_id: "ui.device.0.parameters.0.element", value: "'span.inform'"},
@@ -193,104 +179,44 @@ export async function seed(options: Record<string, boolean>): Promise<void> {
 
   if (options.index) {
     resources["config"] = (resources["config"] || []).concat([
-      { _id: "ui.index.0.type", value: "'device-link'" },
-      { _id: "ui.index.0.label", value: "'Serial number'" },
-      { _id: "ui.index.0.parameter", value: "DeviceID.SerialNumber" },
-      { _id: "ui.index.0.components.0.type", value: "'parameter'" },
-      { _id: "ui.index.1.label", value: "'Product class'" },
-      { _id: "ui.index.1.parameter", value: "DeviceID.ProductClass" },
-      { _id: "ui.index.2.label", value: "'Software version'" },
-      {
-        _id: "ui.index.2.parameter",
-        value: "InternetGatewayDevice.DeviceInfo.SoftwareVersion",
-      },
-      { _id: "ui.index.3.label", value: "'IP'" },
-      {
-        _id: "ui.index.3.parameter",
-        value:
-          "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.ExternalIPAddress",
-      },
-      { _id: "ui.index.4.label", value: "'SSID'" },
-      {
-        _id: "ui.index.4.parameter",
-        value: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.SSID",
-      },
-      { _id: "ui.index.5.type", value: "'container'" },
-      { _id: "ui.index.5.label", value: "'Last inform'" },
-      { _id: "ui.index.5.element", value: "'span.inform'" },
-      { _id: "ui.index.5.parameter", value: "DATE_STRING(Events.Inform)" },
-      { _id: "ui.index.5.components.0.type", value: "'parameter'" },
-      { _id: "ui.index.5.components.1.chart", value: "'online'" },
-      { _id: "ui.index.5.components.1.type", value: "'overview-dot'" },
-      { _id: "ui.index.6.type", value: "'tags'" },
-      { _id: "ui.index.6.label", value: "'Tags'" },
-      { _id: "ui.index.6.parameter", value: "Tags" },
-      { _id: "ui.index.6.unsortable", value: "true" },
-      { _id: "ui.index.6.writable", value: "false" },
-    ]);
-  }
-
-  if (options.overview) {
-    resources["config"] = (resources["config"] || []).concat([
-      { _id: "ui.overview.charts.online.label", value: "'Online status'" },
-      {
-        _id: "ui.overview.charts.online.slices.1_onlineNow.color",
-        value: "'#31a354'",
-      },
-      {
-        _id: "ui.overview.charts.online.slices.1_onlineNow.filter",
-        value: "Events.Inform > NOW() - 5 * 60 * 1000",
-      },
-      {
-        _id: "ui.overview.charts.online.slices.1_onlineNow.label",
-        value: "'Online Now'",
-      },
-      {
-        _id: "ui.overview.charts.online.slices.2_past24.color",
-        value: "'#a1d99b'",
-      },
-      {
-        _id: "ui.overview.charts.online.slices.2_past24.filter",
-        value:
-          "Events.Inform > (NOW() - 5 * 60 * 1000) - (24 * 60 * 60 * 1000) AND Events.Inform < (NOW() - 5 * 60 * 1000)",
-      },
-      {
-        _id: "ui.overview.charts.online.slices.2_past24.label",
-        value: "'Past 24 Hours'",
-      },
-      {
-        _id: "ui.overview.charts.online.slices.3_others.color",
-        value: "'#e5f5e0'",
-      },
-      {
-        _id: "ui.overview.charts.online.slices.3_others.filter",
-        value:
-          "Events.Inform < (NOW() - 5 * 60 * 1000) - (24 * 60 * 60 * 1000)",
-      },
-      {
-        _id: "ui.overview.charts.online.slices.3_others.label",
-        value: "'Others'",
-      },
+      {_id: "ui.index.0.type", value: "'device-link'"},
+      {_id: "ui.index.0.label", value: "'Serial number'"},
+      {_id: "ui.index.0.parameter", value: "DeviceID.SerialNumber"},
+      {_id: "ui.index.0.components.0.type", value: "'parameter'"},
+      {_id: "ui.index.1.label", value: "'Product class'"},
+      {_id: "ui.index.1.parameter", value: "DeviceID.ProductClass"},
+      {_id: "ui.index.2.label", value: "'Software version'"},
+      {_id: "ui.index.2.parameter", value: "InternetGatewayDevice.DeviceInfo.SoftwareVersion"},
+      {_id: "ui.index.3.label", value: "'IP'"},
+      {_id: "ui.index.3.parameter", value: "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.ExternalIPAddress"},
+      {_id: "ui.index.4.label", value: "'SSID'"},
+      {_id: "ui.index.4.parameter", value: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.SSID"},
+      {_id: "ui.index.5.type", value: "'container'"},
+      {_id: "ui.index.5.label", value: "'Last inform'"},
+      {_id: "ui.index.5.element", value: "'span.inform'"},
+      {_id: "ui.index.5.parameter", value: "DATE_STRING(Events.Inform)"},
+      {_id: "ui.index.5.components.0.type", value: "'parameter'"},
+      {_id: "ui.index.5.components.1.chart", value: "'online'"},
+      {_id: "ui.index.5.components.1.type", value: "'overview-dot'"},
+      {_id: "ui.index.6.type", value: "'tags'"},
+      {_id: "ui.index.6.label", value: "'Tags'"},
+      {_id: "ui.index.6.parameter", value: "Tags"},
+      {_id: "ui.index.6.unsortable", value: "true"},
+      {_id: "ui.index.6.writable", value: "false"},
     ]);
   }
 
   if (options.presets) {
     resources["presets"] = [
-      {
-        _id: "bootstrap",
-        weight: 0,
-        channel: "bootstrap",
-        events: "0 BOOTSTRAP",
-        provision: "bootstrap",
-      },
-      { _id: "default", weight: 0, channel: "default", provision: "default" },
-      { _id: "inform", weight: 0, channel: "inform", provision: "inform" },
+      {_id: "bootstrap", weight: 0, channel: "bootstrap", events: "0 BOOTSTRAP", provision: "bootstrap"},
+      {_id: "default", weight: 0, channel: "default", provision: "default"},
+      {_id: "inform", weight: 0, channel: "inform", provision: "inform"},
     ];
 
     resources["provisions"] = [
-      { _id: "bootstrap", script: BOOTSTRAP_SCRIPT },
-      { _id: "default", script: DEFAULT_SCRIPT },
-      { _id: "inform", script: INFORM_SCRIPT },
+      {_id: "bootstrap", script: BOOTSTRAP_SCRIPT},
+      {_id: "default", script: DEFAULT_SCRIPT},
+      {_id: "inform", script: INFORM_SCRIPT},
     ];
   }
 

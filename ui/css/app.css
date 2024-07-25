@@ -371,8 +371,11 @@ h6 {
 --------------------------------------------------------------*/
 img.logo {
     height: 60px;
-    margin: 0px;
+    margin: 0;
     vertical-align: top;
+}
+img.logo-login {
+    width: 300px;
 }
 
 .header {

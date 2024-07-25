@@ -77,6 +77,8 @@ const ASSETS = {} as {
     APP_CSS?: string;
     ICONS_SVG?: string;
     LOGO_PNG?: string;
+    LOGO_WHITE_PNG?: string;
+    LOGIN_BACKGROUND_JPG?: string;
     FAVICON_PNG?: string;
 };
 
@@ -233,29 +235,32 @@ async function copyStatic(): Promise<void> {
         'README.md',
         'CHANGELOG.md',
         'public/logo.png',
+        'public/logo-white.png',
+        'public/login-background.jpg',
         'public/favicon.png',
     ];
 
-    const [logo, favicon] = await Promise.all([
+    const [logo, logo_white, login_back, favicon] = await Promise.all([
                                                   fsAsync.readFile(path.join(INPUT_DIR, 'public/logo.png')),
+                                                  fsAsync.readFile(path.join(INPUT_DIR, 'public/logo-white.png')),
+                                                  fsAsync.readFile(path.join(INPUT_DIR, 'public/login-background.jpg')),
                                                   fsAsync.readFile(path.join(INPUT_DIR, 'public/favicon.png')),
                                               ]);
 
-    ASSETS.LOGO_PNG    = `logo-${assetHash(logo)}.png`;
-    ASSETS.FAVICON_PNG = `favicon-${assetHash(favicon)}.png`;
+    ASSETS.LOGO_PNG             = `logo-${assetHash(logo)}.png`;
+    ASSETS.LOGO_WHITE_PNG       = `logo-white-${assetHash(logo_white)}.png`;
+    ASSETS.LOGIN_BACKGROUND_JPG = `logo-white-${assetHash(login_back)}.png`;
+    ASSETS.FAVICON_PNG          = `favicon-${assetHash(favicon)}.png`;
 
-    const filenames                 = {} as Record<string, string>;
-    filenames['public/logo.png']    = path.join('public', ASSETS.LOGO_PNG);
-    filenames['public/favicon.png'] = path.join('public', ASSETS.FAVICON_PNG);
+    const filenames                    = {} as Record<string, string>;
+    filenames['public/logo.png']                = path.join('public', ASSETS.LOGO_PNG);
+    filenames['public/logo-white.png']          = path.join('public', ASSETS.LOGO_WHITE_PNG);
+    filenames['public/login-background.jpg']    = path.join('public', ASSETS.LOGIN_BACKGROUND_JPG);
+    filenames['public/favicon.png']             = path.join('public', ASSETS.FAVICON_PNG);
 
     await Promise.all(
-        files.map((f) =>
-                      fsAsync.copyFile(
-                          path.join(INPUT_DIR, f),
-                          path.join(OUTPUT_DIR, filenames[f] || f),
-                      ),
-        ),
-    );
+        files.map((f) => fsAsync.copyFile(path.join(INPUT_DIR, f), path.join(OUTPUT_DIR, filenames[f] || f)),
+        ));
 }
 
 async function generateCss(): Promise<void> {
@@ -272,6 +277,7 @@ async function generateCss(): Promise<void> {
                                         metafile      : true,
                                         loader        : {
                                             '.png'  : 'dataurl',
+                                            '.jpg'  : 'dataurl',
                                             '.woff' : 'dataurl',
                                             '.woff2': 'dataurl',
                                             '.eot'  : 'dataurl',
@@ -303,10 +309,10 @@ async function generateFrontendJs(): Promise<void> {
                                         format        : 'esm',
                                         target        : ['chrome109', 'safari15.6', 'firefox115', 'opera102', 'edge118'],
                                         entryPoints   : ['ui/app.ts'],
-                                        entryNames : '[dir]/[name]-[hash]',
-                                        outdir     : path.join(OUTPUT_DIR, 'public'),
-                                        plugins    : [packageDotJsonPlugin, inlineDepsPlugin, assetsPlugin],
-                                        metafile   : true,
+                                        entryNames    : '[dir]/[name]-[hash]',
+                                        outdir        : path.join(OUTPUT_DIR, 'public'),
+                                        plugins       : [packageDotJsonPlugin, inlineDepsPlugin, assetsPlugin],
+                                        metafile      : true,
                                     });
 
     for (const [k, v] of Object.entries(res.metafile.outputs)) {

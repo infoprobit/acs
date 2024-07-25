@@ -41,7 +41,7 @@ const unpackSmartQuery = memoize((query) => {
 export function init(args: Record<string, unknown>): Promise<Record<string, unknown>> {
     return new Promise((resolve, reject) => {
         if (!window.authorizer.hasAccess('devices', 2))
-            return void reject(new Error('You are not authorized to view this page'));
+            return void reject(new Error('You are not authorized to view this page!'));
 
         const filter          = args.hasOwnProperty('filter') ? '' + args['filter'] : '';
         const sort            = args.hasOwnProperty('sort') ? '' + args['sort'] : '';

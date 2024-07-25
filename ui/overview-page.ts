@@ -69,9 +69,7 @@ async function fetchProductClass() {
 
 export async function init(args: Record<string, unknown>): Promise<Record<string, unknown>> {
     if (!window.authorizer.hasAccess('devices', 1)) {
-        return Promise.reject(
-            new Error('You are not authorized to view this page'),
-        );
+        return Promise.reject(new Error('You are not authorized to view this page!'));
     }
 
     const filter           = args.hasOwnProperty('filter') ? '' + args['filter'] : '';
