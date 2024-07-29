@@ -4,7 +4,6 @@ import drawerComponent from './drawer-component.ts';
 import userMenu from './user-menu.ts';
 import * as overlay from './overlay.ts';
 import datalist from './datalist.ts';
-import { LOGO_PNG } from '../build/assets.ts';
 
 const simplePages = [
     'login',
@@ -45,8 +44,9 @@ const component: ClosureComponent = (): Component => {
             return [
                 m(
                     '#header.header.fixed-top.d-flex.align-items-center',
-                    m('a', {href: '/'},
-                      m('img', {class: 'logo d-flex align-items-center w-auto', src: LOGO_PNG}),
+                    m(
+                        'div.d-flex.justify-content-between',
+                        m('a.logo.d-flex.align-items-center', {href: '/'}, m('span.d-lg-block', 'Pro ACS')),
                     ),
                     m('i.bi.bi-list.toggle-sidebar-btn', {
                         onclick: () => {

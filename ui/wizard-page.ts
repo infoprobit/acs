@@ -12,7 +12,7 @@ export const component: ClosureComponent = (vnode): Component => {
 
     return {
         view: () => {
-            document.title = 'Initialization wizard - ProACS';
+            document.title = 'Pro ACS: Initialization Wizard';
 
             const checkboxes = [
                 'users',

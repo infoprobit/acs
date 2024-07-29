@@ -16,7 +16,7 @@ import { authLocal } from "./api-functions.ts";
 import * as init from "./init.ts";
 import { version as VERSION } from "../package.json";
 import memoize from "./common/memoize.ts";
-import { APP_JS, APP_CSS, FAVICON_PNG } from "../build/assets.ts";
+import { APP_JS, APP_CSS, FAVICON_ICO } from "../build/assets.ts";
 
 declare module "koa" {
   interface Request {
@@ -221,12 +221,12 @@ router.get("/", async (ctx) => {
   ctx.body = `<!DOCTYPE html>
   <html>
     <head>
-      <title>ProACS</title>
-      <link rel="shortcut icon" type="image/png" href="${FAVICON_PNG}" />
+      <title>Pro ACS</title>
+      <link rel="icon" href="${FAVICON_ICO}" >
       <link rel="stylesheet" href="${APP_CSS}">
     </head>
     <body>
-    <noscript>ProACS UI requires JavaScript to work. Please enable JavaScript in your browser.</noscript>
+    <noscript>Pro ACS UI requires JavaScript to work. Please enable JavaScript in your browser.</noscript>
       <script>
         window.clientConfig = ${JSON.stringify({
           ui: localCache.getUiConfig(ctx.state.configSnapshot),

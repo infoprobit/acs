@@ -197,7 +197,7 @@ function renderActions(selected: Set<string>): Children {
 export const component: ClosureComponent = (): Component => {
     return {
         view: (vnode) => {
-            document.title   = 'Devices - ProACS';
+            document.title   = 'Pro ACS: Devices';
             const attributes = vnode.attrs['indexParameters'];
 
             function showMore(): void {

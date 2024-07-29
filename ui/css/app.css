@@ -369,13 +369,27 @@ h6 {
 /*--------------------------------------------------------------
 # Header
 --------------------------------------------------------------*/
-img.logo {
-    height: 60px;
-    margin: 0;
-    vertical-align: top;
+.logo {
+    line-height: 1;
+    padding-left: 35px;
 }
-img.logo-login {
-    width: 300px;
+
+@media (min-width: 1200px) {
+    .logo {
+        width: 180px;
+    }
+}
+
+.logo img {
+    max-height: 26px;
+    margin-right: 6px;
+}
+
+.logo span {
+    font-size: 26px;
+    font-weight: 700;
+    font-family: "Nunito", sans-serif;
+    color: #fff;
 }
 
 .header {
@@ -383,15 +397,16 @@ img.logo-login {
     z-index: 997;
     height: 60px;
     box-shadow: 0 2px 20px rgba(1, 41, 112, 0.1);
-    background-color: #fff;
+    background-color: #002f87;
     padding-left: 20px;
 }
 
 .header .toggle-sidebar-btn {
     font-size: 32px;
-    padding-left: 100px;
+    padding-left: 50px;
     cursor: pointer;
-    color: #012970;
+    color: #fff;
+    visibility: hidden;
 }
 
 .header .search-bar {
@@ -406,7 +421,7 @@ img.logo-login {
         left: 0;
         right: 0;
         padding: 20px;
-        box-shadow: 0px 0px 15px 0px rgba(1, 41, 112, 0.1);
+        box-shadow: 0 0 15px 0 rgba(1, 41, 112, 0.1);
         background: white;
         z-index: 9999;
         transition: 0.3s;
@@ -418,6 +433,10 @@ img.logo-login {
         top: 60px;
         visibility: visible;
         opacity: 1;
+    }
+
+    .header .toggle-sidebar-btn {
+        visibility: visible;
     }
 }
 
@@ -593,6 +612,10 @@ img.logo-login {
     background-color: #f6f9ff;
 }
 
+.header-nav span {
+    color: #f6f9ff;
+}
+
 /*--------------------------------------------------------------
 # Sidebar
 --------------------------------------------------------------*/
@@ -601,7 +624,7 @@ img.logo-login {
     top: 60px;
     left: 0;
     bottom: 0;
-    width: 300px;
+    width: 250px;
     z-index: 100;
     transition: all 0.3s;
     padding: 20px;
@@ -613,7 +636,7 @@ img.logo-login {
 
 @media (max-width: 1199px) {
     .sidebar {
-        left: -300px;
+        left: -250px;
     }
 }
 
@@ -628,10 +651,8 @@ img.logo-login {
 }
 
 @media (min-width: 1200px) {
-
-    #main,
-    #footer {
-        margin-left: 300px;
+    #main, #footer {
+        margin-left: 250px;
     }
 }
 
@@ -642,7 +663,6 @@ img.logo-login {
 }
 
 @media (min-width: 1200px) {
-
     .toggle-sidebar #main,
     .toggle-sidebar #footer {
         margin-left: 0;
@@ -749,6 +769,13 @@ img.logo-login {
 .sidebar-nav .nav-content .nav-link:hover i,
 .sidebar-nav .nav-content .nav-link.active i {
     background-color: #80bc00;
+}
+
+.bottom-logo {
+    position: fixed;
+    bottom: 10px;
+    color: #fff;
+    margin: 0 15px;
 }
 
 /*--------------------------------------------------------------

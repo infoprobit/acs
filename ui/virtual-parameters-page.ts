@@ -124,7 +124,7 @@ export function init(args: Record<string, unknown>): Promise<Record<string, unkn
 export const component: ClosureComponent = (): Component => {
     return {
         view: (vnode) => {
-            document.title = 'Virtual Parameters - ProACS';
+            document.title = 'Pro ACS: Virtual Parameters';
 
             function showMore(): void {
                 vnode.state['showCount'] = (vnode.state['showCount'] || PAGE_SIZE) + PAGE_SIZE;

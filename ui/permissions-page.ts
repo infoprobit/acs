@@ -152,7 +152,7 @@ export function init(args: Record<string, unknown>): Promise<Record<string, unkn
 export const component: ClosureComponent = (): Component => {
     return {
         view: (vnode) => {
-            document.title = 'Permissions - ProACS';
+            document.title = 'Pro ACS: Permissions';
 
             function showMore(): void {
                 vnode.state['showCount'] =

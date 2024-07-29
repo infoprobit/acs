@@ -79,7 +79,7 @@ const ASSETS = {} as {
     LOGO_PNG?: string;
     LOGO_WHITE_PNG?: string;
     LOGIN_BACKGROUND_JPG?: string;
-    FAVICON_PNG?: string;
+    FAVICON_ICO?: string;
 };
 
 const assetsPlugin = {
@@ -236,26 +236,26 @@ async function copyStatic(): Promise<void> {
         'public/logo.png',
         'public/logo-white.png',
         'public/login-background.jpg',
-        'public/favicon.png',
+        'public/favicon.ico',
     ];
 
     const [logo, logo_white, login_back, favicon] = await Promise.all([
                                                               fsAsync.readFile(path.join(INPUT_DIR, 'public/logo.png')),
                                                               fsAsync.readFile(path.join(INPUT_DIR, 'public/logo-white.png')),
                                                               fsAsync.readFile(path.join(INPUT_DIR, 'public/login-background.jpg')),
-                                                              fsAsync.readFile(path.join(INPUT_DIR, 'public/favicon.png')),
+                                                              fsAsync.readFile(path.join(INPUT_DIR, 'public/favicon.ico')),
                                                           ]);
 
     ASSETS.LOGO_PNG             = `logo-${assetHash(logo)}.png`;
     ASSETS.LOGO_WHITE_PNG       = `logo-white-${assetHash(logo_white)}.png`;
     ASSETS.LOGIN_BACKGROUND_JPG = `logo-white-${assetHash(login_back)}.png`;
-    ASSETS.FAVICON_PNG          = `favicon-${assetHash(favicon)}.png`;
+    ASSETS.FAVICON_ICO          = `favicon-${assetHash(favicon)}.ico`;
 
     const filenames= {} as Record<string, string>;
     filenames['public/logo.png']                = path.join('public', ASSETS.LOGO_PNG);
     filenames['public/logo-white.png']          = path.join('public', ASSETS.LOGO_WHITE_PNG);
     filenames['public/login-background.jpg']    = path.join('public', ASSETS.LOGIN_BACKGROUND_JPG);
-    filenames['public/favicon.png']             = path.join('public', ASSETS.FAVICON_PNG);
+    filenames['public/favicon.ico']             = path.join('public', ASSETS.FAVICON_ICO);
 
     await Promise.all(
         files.map((f) => fsAsync.copyFile(path.join(INPUT_DIR, f), path.join(OUTPUT_DIR, filenames[f] || f)),
@@ -278,6 +278,7 @@ async function generateCss(): Promise<void> {
                                           loader        : {
                                               '.png'  : 'dataurl',
                                               '.jpg'  : 'dataurl',
+                                              '.ico'  : 'dataurl',
                                               '.woff' : 'dataurl',
                                               '.woff2': 'dataurl',
                                               '.eot'  : 'dataurl',

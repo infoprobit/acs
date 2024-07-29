@@ -111,7 +111,7 @@ const component: ClosureComponent<Attrs> = (initialVnode) => {
             attrs = vnode.attrs;
 
             return m('div.row', [
-                m('div.col-md-1.p-2', m('b', 'Filter: ')),
+                m('div.col-md-2.p-2', m('b', 'Filter: ')),
                 ...filterList.map((fltr, idx) => {
                     return m('div.col-md-3', m('input', {
                         type    : 'text',

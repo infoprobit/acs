@@ -194,7 +194,7 @@ function renderTable(confsResponse, searchString): Children {
 export const component: ClosureComponent = (): Component => {
     return {
         view: (vnode) => {
-            document.title = 'Config - ProACS';
+            document.title = 'Pro ACS: Config';
 
             const search = m('input', {
                 type       : 'text',

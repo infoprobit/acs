@@ -14,7 +14,7 @@ const component: ClosureComponent = (): Component => {
                             class: 'btn.btn-outline-danger.btn-sm',
                             href : '#!/login?' + m.buildQueryString({continue: m.route.get()}),
                         },
-                        'Log In',
+                        'Login',
                     ),
                 );
             }
@@ -23,7 +23,7 @@ const component: ClosureComponent = (): Component => {
                 'nav.header-nav.ms-auto.pe-3',
                 m('span.pe-2', window.username),
                 m(
-                    'button.btn.btn-outline-danger.btn-sm',
+                    'button.btn.btn-danger.btn-sm',
                     {
                         onclick: (e) => {
                             e.target.disabled = true;
@@ -40,7 +40,7 @@ const component: ClosureComponent = (): Component => {
                             return false;
                         },
                     },
-                    'Log Out',
+                    'Logout',
                 ),
             );
         },

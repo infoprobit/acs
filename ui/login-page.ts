@@ -13,14 +13,14 @@ export const component: ClosureComponent = (): Component => {
         view: (vnode) => {
             if (window.username) m.route.set(vnode.attrs['continue'] || '/');
 
-            document.title = 'Login - ProACS';
+            document.title = 'Pro ACS: Login';
             return [
                 m.trust( '<style>body:before { content: " "; display: block; position: absolute; left: 0; top: 0; width: 100%; height: 100%; opacity: 0.6; background-image: url("' + LOGIN_BACKGROUND_JPG + '"); background-repeat: no-repeat; background-position: 50% 0; background-size: cover; }</style>'),
                 m(
                     'div.card.mb-3',
                     m(
                         'div.card-body',
-                        m('div.d-flex.justify-content-center.py-4', m('img', {class: 'logo-login', src: LOGO_PNG})),
+                        m('div.d-flex.justify-content-center.py-4', m('img', {width: '300px', src: LOGO_PNG})),
                         m(
                             'form.row.g-3',
                             m('div.col-12', m('div.input-group', [

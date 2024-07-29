@@ -1,5 +1,6 @@
 import m, { ClosureComponent, Component } from 'mithril';
 import adminMenu from './admin-menu.ts';
+import { LOGO_WHITE_PNG } from '../build/assets.ts';
 
 const adminPages = [
     'presets',
@@ -83,6 +84,10 @@ const component: ClosureComponent = (): Component => {
             return m(
                 'aside', {id: 'sidebar', class: 'sidebar'},
                 m('ul', {id: 'sidebar-nav', class: 'sidebar-nav'}, items),
+                m(
+                    'div.bottom-logo.d-flex.justify-content-center',
+                    m('img', {width: '150px', src: LOGO_WHITE_PNG}),
+                ),
             );
         },
     };

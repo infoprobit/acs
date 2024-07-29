@@ -83,7 +83,7 @@ export async function init(args: Record<string, unknown>): Promise<Record<string
 export const component: ClosureComponent = (): { view: (vnode) => any[] } => {
     return {
         view: (vnode) => {
-            document.title = 'Overview - ProACS';
+            document.title = 'Pro ACS: Dashboard';
             const children = [];
 
             const group   = {};
