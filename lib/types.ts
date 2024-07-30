@@ -492,10 +492,7 @@ export interface UiConfig {
     filters: Record<string, unknown>;
     device: Record<string, unknown>;
     index: Record<string, unknown>;
-    overview: {
-        charts?: Record<string, unknown>;
-        groups?: Record<string, unknown>;
-    };
+    charts?: Record<string, unknown>;
     pageSize?: Expression;
     modalSize?: Expression;
 }

@@ -119,8 +119,7 @@ export async function seed(options: Record<string, boolean>): Promise<void> {
   }
 
   if (options.device) {
-    resources["config"] = (resources["config"] || [])
-        .concat([
+    resources["config"] = (resources["config"] || []).concat([
       {_id: "ui.device.0.type", value: "'parameter-list'"},
       {_id: "ui.device.0.parameters.0.type", value: "'container'"},
       {_id: "ui.device.0.parameters.0.element", value: "'span.inform'"},
@@ -174,6 +173,17 @@ export async function seed(options: Record<string, boolean>): Promise<void> {
 
       {_id: "ui.device.3.type", value: "'device-faults'"},
       {_id: "ui.device.4.type", value: "'all-parameters'"},
+
+      {_id: "ui.charts.online.label", value: "'Online status'" },
+      {_id: "ui.charts.online.slices.1_onlineNow.color", value: "'#31a354'"},
+      {_id: "ui.charts.online.slices.1_onlineNow.filter", value: "Events.Inform > NOW() - 5 * 60 * 1000"},
+      {_id: "ui.charts.online.slices.1_onlineNow.label", value: "'Online Now'"},
+      {_id: "ui.charts.online.slices.2_past24.color", value: "'#a1d99b'"},
+      {_id: "ui.charts.online.slices.2_past24.filter", value: "Events.Inform > (NOW() - 5 * 60 * 1000) - (24 * 60 * 60 * 1000) AND Events.Inform < (NOW() - 5 * 60 * 1000)"},
+      {_id: "ui.charts.online.slices.2_past24.label", value: "'Past 24 Hours'"},
+      {_id: "ui.charts.online.slices.3_others.color", value: "'#e5f5e0'",},
+      {_id: "ui.charts.online.slices.3_others.filter", value: "Events.Inform < (NOW() - 5 * 60 * 1000) - (24 * 60 * 60 * 1000)"},
+      {_id: "ui.charts.online.slices.3_others.label", value: "'Others'"}
     ]);
   }
 

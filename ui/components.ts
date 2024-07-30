@@ -112,7 +112,7 @@ export function contextifyComponent(component: ComponentTypes): ComponentTypes {
                         return res;
                     } catch (err) {
                         return m(
-                            'p.error',
+                            'span.error',
                             {
                                 title  : 'Click to print stack trace to console',
                                 onclick: () => console.error(err),

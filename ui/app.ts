@@ -70,7 +70,6 @@ function pagify(pageName, page): RouteResolver {
         }
 
         return new Promise<void>((resolve) => {
-            console.log(window.username);
             page
                 .init(args)
                 .then((st) => {
