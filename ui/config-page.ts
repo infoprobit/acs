@@ -57,6 +57,8 @@ function putActionHandler(action, _object, isNew?): Promise<ValidationErrors> {
                         .catch(reject);
                 })
                 .catch(reject);
+        } else if (action === 'reset') {
+            resolve(null);
         } else if (action === 'delete') {
             store
                 .deleteResource('config', object['_id'])
@@ -152,9 +154,8 @@ function renderTable(confsResponse, searchString): Children {
                     cb                     = () => comp;
                     overlay.open(
                         cb,
-                        () =>
-                            !comp.state['current']['modified'] ||
-                            confirm('You have unsaved changes. Close anyway?'),
+                        () => !comp.state['current']['modified']
+                            || confirm('You have unsaved changes. Close anyway?'),
                     );
                 },
             },
@@ -252,8 +253,8 @@ export const component: ClosureComponent = (): Component => {
                             cb                     = () => comp;
                             overlay.open(
                                 cb,
-                                () => !comp.state['current']['modified'] ||
-                                    confirm('You have unsaved changes. Close anyway?'),
+                                () => !comp.state['current']['modified'] || confirm(
+                                    'You have unsaved changes. Close anyway?'),
                             );
                         },
                     },
@@ -316,11 +317,8 @@ export const component: ClosureComponent = (): Component => {
                                         ),
                                     );
                                     cb                     = () => comp;
-                                    overlay.open(
-                                        cb,
-                                        () => !comp.state['modified'] ||
-                                            confirm('You have unsaved changes. Close anyway?'),
-                                    );
+                                    overlay.open(cb, () => !comp.state['modified']
+                                        || confirm('You have unsaved changes. Close anyway?'));
                                 },
                             },
                             [m('i.bi.bi-pencil-square'), m.trust('&nbsp;'), `Edit ${sub.name}`],

@@ -84,6 +84,8 @@ function putActionHandler(action, _object, isNew): Promise<ValidationErrors> {
                         .catch(reject);
                 })
                 .catch(reject);
+        } else if (action === 'reset') {
+            resolve(null);
         } else if (action === 'delete') {
             store
                 .deleteResource('presets', object['_id'])

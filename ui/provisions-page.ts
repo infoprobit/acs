@@ -72,6 +72,8 @@ function putActionHandler(action, _object, isNew): Promise<ValidationErrors> {
                         });
                 })
                 .catch(reject);
+        } else if (action === 'reset') {
+            resolve(null);
         } else if (action === 'delete') {
             store
                 .deleteResource('provisions', object['_id'])

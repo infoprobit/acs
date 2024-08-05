@@ -128,7 +128,7 @@ export const component: ClosureComponent = (): Component => {
                 sort : sort,
             });
 
-            const count = store.count('files', filter);
+            const count       = store.count('files', filter);
             const downloadUrl = getDownloadUrl(filter);
 
             const attrs                    = {};
@@ -159,6 +159,9 @@ export const component: ClosureComponent = (): Component => {
                                         Object.assign(
                                             {
                                                 actionHandler: async (action, obj) => {
+                                                    if (action === 'reset') {
+                                                        overlay.close(cb);
+                                                    }
                                                     if (action !== 'save')
                                                         throw new Error('Undefined action');
                                                     const file = obj['file']?.[0];

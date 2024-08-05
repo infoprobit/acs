@@ -210,21 +210,18 @@ const component: ClosureComponent<Attrs> = () => {
 
                 form.push(
                     m('div', {class: (attr.type === 'code') ? 'row mb-12 code' : 'row mb-3'},
-                      m(
-                          'label',
-                          {
-                              class: (attr.type === 'code') ? 'form-label' : 'col-sm-3 col-form-label',
-                              for  : attr.id,
-                          },
-                          attr.label || attr.id,
+                      m('label',
+                        {class: (attr.type === 'code') ? 'form-label' : 'col-sm-3 col-form-label', for: attr.id},
+                        attr.label || attr.id,
                       ),
                       createField(current, attr, focus),
                     ),
                 );
             }
 
+            const reset   = m('button.btn.btn-secondary', {type: 'reset'}, 'Cancel') as VnodeDOM;
             const submit  = m('button.btn.btn-primary', {type: 'submit'}, 'Save') as VnodeDOM;
-            const buttons = [submit];
+            const buttons = [reset, submit];
 
             if (!current.isNew) {
                 buttons.push(
@@ -234,11 +231,13 @@ const component: ClosureComponent<Attrs> = () => {
                             type   : 'button',
                             title  : `Delete ${singular[resource] || resource}`,
                             onclick: (e) => {
-                                e.redraw          = false;
-                                e.target.disabled = true;
-                                void actionHandler('delete', current.object).finally(() => {
-                                    e.target.disabled = false;
-                                });
+                                if (confirm(`Deleting ${singular[resource] || resource}. Are you sure?`)) {
+                                    e.redraw          = false;
+                                    e.target.disabled = true;
+                                    void actionHandler('delete', current.object).finally(() => {
+                                        e.target.disabled = false;
+                                    });
+                                }
                             },
                         },
                         [m('i.bi.bi-trash'), m.trust('&nbsp;'), 'Delete'],
@@ -253,27 +252,33 @@ const component: ClosureComponent<Attrs> = () => {
                     '.modal-header',
                     m('h5.modal-title', `${current.isNew ? 'New' : 'Editing'} ${singular[resource] || resource}`),
                 ),
-                m('.modal-body', m(
-                    'form.row',
-                    {
-                        onsubmit: (e) => {
-                            e.redraw = false;
-                            // const onsubmit = e.target.onsubmit;
-                            e.preventDefault();
-                            // e.target.onsubmit = null;
-                            (submit.dom as HTMLFormElement).disabled = true;
-                            // submit.dom.textContent = "Loading ...";
-                            void actionHandler('save', current.object).finally(() => {
-                                // submit.dom.textContent = "Save";
-                                // e.target.onsubmit = onsubmit;
-                                (submit.dom as HTMLFormElement).disabled = false;
-                            });
-                        },
-                    },
-                    form,
-                )),
+                m('.modal-body', m('form.row', {
+                                       onsubmit: (e) => {
+                                           e.redraw = false;
+                                           e.preventDefault();
+                                           (submit.dom as HTMLFormElement).disabled = true;
+                                           void actionHandler('save', current.object).finally(() => {
+                                               (submit.dom as HTMLFormElement).disabled = false;
+                                           });
+                                       },
+                                       onreset : (e) => {
+                                           e.redraw = false;
+                                           e.preventDefault();
+                                           current.object   = Object.assign({}, base);
+                                           current.modified = false;
+                                           e.currentTarget
+                                               .querySelectorAll('.form-control')
+                                               .forEach((field: { value: any; name: string | number; }) => {
+                                                   field.value = base[field.name] || '';
+                                               });
 
-            ];
+                                           void actionHandler('reset', current.object).finally(() => {
+                                               (reset.dom as HTMLFormElement).disabled = false;
+                                           });
+                                       },
+                                   }, form,
+                ))];
+
             return m('div.modal-content', children);
         },
     };
