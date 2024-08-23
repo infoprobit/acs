@@ -7,15 +7,18 @@ import tags from './tags.ts';
 const component: ClosureComponent = (): Component => {
     return {
         view: (vnode) => {
-            const device = vnode.attrs['device'];
-            return m('.col-lg-6', [
-                m('.card.info-card', m('.card-body', [m('h5.card-title', 'Device Action'), m(deviceActions)])),
-                m('.row', [
-                      m('.col-lg-6', m('.card.info-card', m('.card-body', [m('h5.card-title', 'Tags'), m(tags)]))),
-                      m('.col-lg-6', m('.card.info-card', m('.card-body', [m('h5.card-title', 'Online'), m(ping)]))),
-                  ],
-                ),
-            ]);
+            const info = [];
+            if (window.authorizer.hasAccess('devices', 3)) {
+                info.push(
+                    m('.card.info-card', m('.card-body', [m('h5.card-title', 'Device Action'), m(deviceActions)])),
+                    m('.col-lg-6', m('.card.info-card', m('.card-body', [m('h5.card-title', 'Tags'), m(tags)]))),
+                );
+            }
+            info.push(
+                m('.col-lg-6', m('.card.info-card', m('.card-body', [m('h5.card-title', 'Online'), m(ping)]))),
+            );
+
+            return m('.col-lg-6.row', info);
         },
     };
 };

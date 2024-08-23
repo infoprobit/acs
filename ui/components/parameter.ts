@@ -60,7 +60,7 @@ const component: ClosureComponent = (): Component => {
             if (value == null) return null;
 
             let edit;
-            if (device[parameter]?.writable) {
+            if (device[parameter]?.writable && window.authorizer.hasAccess('devices', 3)) {
                 edit = m('span.parameter', {
                              title  : 'Edit Parameter Value',
                              onclick: () => {

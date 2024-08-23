@@ -19,23 +19,21 @@ const component: ClosureComponent<Attrs> = () => {
 
                 const type = evaluateExpression(parameter.type, device);
                 const p    = m.context(
-                    {device   : device, parameter: parameter.parameter},
+                    {device: device, parameter: parameter.parameter},
                     (type as string) || 'parameter',
                     parameter,
                 );
 
-                return m(
-                    'tr',
-                    {
-                        oncreate: (vn) => {
-                            (vn.dom as HTMLElement).style.display = (p as VnodeDOM).dom ? '' : 'none';
-                        },
-                        onupdate: (vn) => {
-                            (vn.dom as HTMLElement).style.display = (p as VnodeDOM).dom ? '' : 'none';
-                        },
-                    },
-                    m('th', evaluateExpression(parameter.label, device)),
-                    m('td', p),
+                return m('tr', {
+                             oncreate: (vn) => {
+                                 (vn.dom as HTMLElement).style.display = (p as VnodeDOM).dom ? '' : 'none';
+                             },
+                             onupdate: (vn) => {
+                                 (vn.dom as HTMLElement).style.display = (p as VnodeDOM).dom ? '' : 'none';
+                             },
+                         },
+                         m('th', evaluateExpression(parameter.label, device)),
+                         m('td', p),
                 );
             });
 

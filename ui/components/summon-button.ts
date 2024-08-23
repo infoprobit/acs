@@ -7,6 +7,10 @@ import * as notifications from '../notifications.ts';
 const component: ClosureComponent = (): Component => {
     return {
         view: (vnode) => {
+            if (!window.authorizer.hasAccess('devices', 3)) {
+                return m.trust('&nbsp;');
+            }
+
             const device = vnode.attrs['device'];
 
             return m(

@@ -88,46 +88,47 @@ const component: ClosureComponent<Attrs> = () => {
                 const val   = [];
                 const attrs = {key: k};
 
-                if (p.object === false) {
-                    val.push(
-                        m('parameter', Object.assign({device: device, parameter: memoizedParse(k)})),
-                    );
-                } else if (p.object && p.writable) {
-                    if (instanceRegex.test(k)) {
-                        val.push(m('span.parameter', {
-                            title  : 'Delete this Instance',
-                            onclick: () => {
-                                taskQueue.queueTask({
-                                                        name      : 'deleteObject',
-                                                        device    : device['DeviceID.ID'].value[0] as string,
-                                                        objectName: k,
-                                                    });
-                            },
-                        }, [m.trust('&nbsp;'), m('i.bi.bi-trash')]));
-                    } else {
-                        val.push(m('span.parameter', {
-                            title  : 'Create a New Instance',
-                            onclick: () => {
-                                taskQueue.queueTask({
-                                                        name      : 'addObject',
-                                                        device    : device['DeviceID.ID'].value[0] as string,
-                                                        objectName: k,
-                                                    });
-                            },
-                        }, [m.trust('&nbsp;'), m('i.bi.bi-plus-circle')]));
+                if (window.authorizer.hasAccess('devices', 3)) {
+                    if (p.object === false) {
+                        val.push(
+                            m('parameter', Object.assign({device: device, parameter: memoizedParse(k)})),
+                        );
+                    } else if (p.object && p.writable) {
+                        if (instanceRegex.test(k)) {
+                            val.push(m('span.parameter', {
+                                title  : 'Delete this Instance',
+                                onclick: () => {
+                                    taskQueue.queueTask({
+                                                            name      : 'deleteObject',
+                                                            device    : device['DeviceID.ID'].value[0] as string,
+                                                            objectName: k,
+                                                        });
+                                },
+                            }, [m.trust('&nbsp;'), m('i.bi.bi-trash')]));
+                        } else {
+                            val.push(m('span.parameter', {
+                                title  : 'Create a New Instance',
+                                onclick: () => {
+                                    taskQueue.queueTask({
+                                                            name      : 'addObject',
+                                                            device    : device['DeviceID.ID'].value[0] as string,
+                                                            objectName: k,
+                                                        });
+                                },
+                            }, [m.trust('&nbsp;'), m('i.bi.bi-plus-circle')]));
+                        }
                     }
+                    val.push(m('span.parameter', {
+                        title  : 'Refresh Tree',
+                        onclick: () => {
+                            taskQueue.queueTask({
+                                                    name          : 'getParameterValues',
+                                                    device        : device['DeviceID.ID'].value[0] as string,
+                                                    parameterNames: [k],
+                                                });
+                        },
+                    }, [m.trust('&nbsp;'), m('i.bi.bi-arrow-clockwise')]));
                 }
-
-                val.push(m('span.parameter', {
-                    title  : 'Refresh Tree',
-                    onclick: () => {
-                        taskQueue.queueTask({
-                                                name          : 'getParameterValues',
-                                                device        : device['DeviceID.ID'].value[0] as string,
-                                                parameterNames: [k],
-                                            });
-                    },
-                }, [m.trust('&nbsp;'), m('i.bi.bi-arrow-clockwise')]));
 
                 return m('tr', attrs, m('td', k), m('td', val));
             });

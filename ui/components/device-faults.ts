@@ -22,45 +22,47 @@ const component: ClosureComponent = (): Component => {
                 'Detail',
                 'Retries',
                 'Timestamp',
-                '',
-            ].map((l) => m('th', l));
-            const thead   = m('thead', m('tr', headers));
+            ];
+
+            if (window.authorizer.hasAccess('devices', 3)) {
+                headers.push('');
+            }
+
+            const thead = m('thead', m('tr', headers.map((l) => m('th', l))));
 
             const rows = [];
             for (const f of faults.value) {
-                rows.push([
-                              m('td', f['channel']),
-                              m('td', f['code']),
-                              m('td', m('long-text', {text: f['message']})),
-                              m('td', m('long-text', {text: stringify(f['detail'])})),
+                const row = [
+                    m('td', f['channel']),
+                    m('td', f['code']),
+                    m('td', m('long-text', {text: f['message']})),
+                    m('td', m('long-text', {text: stringify(f['detail'])})),
+                    m('td', f['retries']),
+                    m('td', new Date(f['timestamp']).toLocaleString()),
+                ];
+                if (window.authorizer.hasAccess('devices', 3)) {
+                    row.push(
+                        m('td', m('button.btn.btn-sm.btn-outline-danger', {
+                            title  : 'Delete Fault',
+                            onclick: (e) => {
+                                e.redraw = false;
+                                store
+                                    .deleteResource('faults', f['_id'])
+                                    .then(() => {
+                                        notifications.push('success', 'Fault Deleted!');
+                                        store.setTimestamp(Date.now());
+                                        m.redraw();
+                                    })
+                                    .catch((err) => {
+                                        notifications.push('error', err.message);
+                                        store.setTimestamp(Date.now());
+                                    });
+                            },
+                        }, m('i.bi.bi-trash'))),
+                    );
+                }
 
-                              m('td', f['retries']),
-                              m('td', new Date(f['timestamp']).toLocaleString()),
-                              m(
-                                  'td',
-                                  m(
-                                      'button.btn.btn-sm.btn-outline-danger',
-                                      {
-                                          title  : 'Delete Fault',
-                                          onclick: (e) => {
-                                              e.redraw = false;
-                                              store
-                                                  .deleteResource('faults', f['_id'])
-                                                  .then(() => {
-                                                      notifications.push('success', 'Fault Deleted!');
-                                                      store.setTimestamp(Date.now());
-                                                      m.redraw();
-                                                  })
-                                                  .catch((err) => {
-                                                      notifications.push('error', err.message);
-                                                      store.setTimestamp(Date.now());
-                                                  });
-                                          },
-                                      },
-                                      m('i.bi.bi-trash'),
-                                  ),
-                              ),
-                          ]);
+                rows.push(row);
             }
 
             let tbody: any;

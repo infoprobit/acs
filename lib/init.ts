@@ -89,19 +89,31 @@ export async function seed(options: Record<string, boolean>): Promise<void> {
 
   if (options.users) {
     resources["permissions"] = [
+      // Role Admin
       {role: "admin", resource: "devices", access: 3, validate: "true"},
       {role: "admin", resource: "faults", access: 3, validate: "true"},
-      {role: "admin", resource: "files", access: 3, validate: "true"},
+      // Role Admin access to "Admin Menu"
       {role: "admin", resource: "presets", access: 3, validate: "true"},
       {role: "admin", resource: "provisions", access: 3, validate: "true"},
+      {role: "admin", resource: "virtualParameters", access: 3, validate: "true"},
+      {role: "admin", resource: "files", access: 3, validate: "true"},
       {role: "admin", resource: "config", access: 3, validate: "true"},
       {role: "admin", resource: "permissions", access: 3, validate: "true"},
       {role: "admin", resource: "users", access: 3, validate: "true"},
-      {role: "admin", resource: "virtualParameters", access: 3, validate: "true"},
+
+       // Role Engineer can view all tabs w/o access to "Admin Menu"
+      {role: "engineer", resource: "devices", access: 3, validate: "true"},
+      {role: "engineer", resource: "faults", access: 3, validate: "true"},
+
+      // Role Viewer, same as Engineer but cannot do any Device Actions
+      {role: "viewer", resource: "devices", access: 2, validate: "true"},
+      {role: "viewer", resource: "faults", access: 2, validate: "true"},
     ];
 
     resources["users"] = [
       {username: "admin@probit.com", password: "ProbitACS2024", roles: ["admin"]},
+      {username: "engineer@probit.com", password: "ProbitTest2024", roles: ["engineer"]},
+      {username: "viewer@probit.com", password: "ProbitTest2024", roles: ["viewer"]},
     ];
   }
 
